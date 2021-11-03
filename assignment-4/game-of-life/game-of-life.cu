@@ -22,6 +22,8 @@ __global__ void compute_on_gpu(int *life, int *previous_life, int X_limit, int Y
     /* your code here */
 }
 
+
+
 /* allocates a new grid on the gpu. exits on error. */
 int *allocate_grid_on_device(int length) {
     int *grid;
@@ -93,13 +95,10 @@ void read_input_file(int *life, string const &input_file_name, int Y_limit) {
  * Writes out the final state of the 2D matrix to a csv file. 
  */
 void write_output(int *result_matrix, int X_limit, int Y_limit,
-                  string const &input_name, int num_of_generations) {
+                  string const &output_name, int num_of_generations) {
     
     // Open the output file for writing.
-    ofstream output_file;
-    string input_file_name = input_name.substr(0, input_name.length() - 5);
-    output_file.open(input_file_name + "." + to_string(num_of_generations) +
-                    ".csv");
+    ofstream output_file(output_name);
     if (!output_file.is_open())
         perror("Output file cannot be opened");
     
@@ -178,13 +177,14 @@ void compute(int *life, int *previous_life, int X_limit, int Y_limit) {
   */
 int main(int argc, char *argv[]) {
 
-    if (argc != 5)
-        perror("Expected arguments: ./life <input_file> <num_of_generations> <X_limit> <Y_limit>");
+    if (argc != 6)
+        perror("Expected arguments: ./life <input_file> <num_of_generations> <X_limit> <Y_limit> <output_file>");
 
     string input_file_name = argv[1];
     int num_of_generations = stoi(argv[2]);
     int X_limit = stoi(argv[3]);
     int Y_limit = stoi(argv[4]);
+    string output_file_name = argv[5];
     
     int *life = new int [X_limit*Y_limit];
     fill_n(life, X_limit*Y_limit, 0);
@@ -241,7 +241,7 @@ int main(int argc, char *argv[]) {
     copy_grid_to_host(life, d_life, X_limit*Y_limit);
 
     // Write out the final state to the output file.
-    write_output(life, X_limit, Y_limit, input_file_name, num_of_generations);
+    write_output(life, X_limit, Y_limit, output_file_name, num_of_generations);
 
     delete[] life;
     delete[] previous_life;
