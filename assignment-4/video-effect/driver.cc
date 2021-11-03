@@ -98,9 +98,12 @@ class VideoUtility {
             for (int i = 0; i < height_; i += 1) {
                 for (int j = 0; j < width_; j += 1) {
                     int flatIdx = i*width_*3 + j*3;
-                    outFile << scratch_[flatIdx+0] << ","
-                            << scratch_[flatIdx+1] << ","
-                            << scratch_[flatIdx+2] << ",";
+                    outFile << static_cast<unsigned>(static_cast<uint8_t>(scratch_[flatIdx+0]*255.0f)) << ","
+                            << static_cast<unsigned>(static_cast<uint8_t>(scratch_[flatIdx+1]*255.0f)) << ","
+                            << static_cast<unsigned>(static_cast<uint8_t>(scratch_[flatIdx+2]*255.0f));
+
+                    if (j != width_ - 1)
+                        outFile << ",";
                 }
                 outFile << "\n";
             }
@@ -202,17 +205,20 @@ extern float convolveFrames(std::vector<float *> const& framesIn, std::vector<fl
  */
 int main(int argc, char **argv) {
 
-    if (argc < 3) {
-        std::cerr << "Usage: " << argv[0] << " <fname> <kernel-name> <?frame-idx>" << std::endl;
+    if (argc < 4) {
+        std::cerr << "Usage: " << argv[0] << " <input_file> <output_file> <kernel_name> <?frame_idx> <?frame_file>" << std::endl;
         std::exit(1);
     }
 
     const std::string inputFilename(argv[1]);
-    const std::string outputFilename = inputFilename.substr(0, inputFilename.size()-4) + "_out" + inputFilename.substr(inputFilename.size()-4);
-    const std::string kernelName(argv[2]);
+    const std::string outputFilename (argv[2]);
+    const std::string kernelName(argv[3]);
     int frameIdx = -1;
-    if (argc == 4)
-        frameIdx = std::stoi(std::string(argv[3]));
+    std::string frameFilename;
+    if (argc == 6) {
+        frameIdx = std::stoi(std::string(argv[4]));
+        frameFilename = std::string(argv[5]);
+    }
 
     int kernelWidth, kernelHeight;
     float *kernel = getKernel(kernelName, kernelWidth, kernelHeight);
@@ -224,7 +230,7 @@ int main(int argc, char **argv) {
 
     /* create frame batches */
     std::vector<float *> inputBatch, outputBatch;
-    const int batchSize = video.getBatchSize(1000);
+    const int batchSize = video.getBatchSize(1500);
     video.allocateFrames(inputBatch, batchSize);
     video.allocateFrames(outputBatch, batchSize);
 
@@ -236,7 +242,7 @@ int main(int argc, char **argv) {
         video.writeFrames(outputBatch);
 
         if (video.numFrames() / frameIdx == batchCounter) {
-            video.dumpFrame(outputBatch, frameIdx % batchSize, "frame-"+std::to_string(frameIdx)+".csv");
+            video.dumpFrame(outputBatch, frameIdx % batchSize, frameFilename);
         }
         batchCounter += 1;
     }

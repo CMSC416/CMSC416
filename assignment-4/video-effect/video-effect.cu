@@ -2,7 +2,7 @@
 
 /*  use this to set the block size of the kernel launches.
     CUDA kernels will be launched with block size blockDimSize by blockDimSize. */
-constexpr int blockDimSize = 32;
+constexpr int blockDimSize = 8;
 
 /*  your job is to write convolveGPU:
     convolveGPU will be called with blockSize blockDimSize x blockDimSize 

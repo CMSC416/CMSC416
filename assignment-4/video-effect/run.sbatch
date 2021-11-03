@@ -13,4 +13,4 @@ module load cuda opencv
 export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/software/spack-software/2020.05.14/linux-rhel8-ivybridge/gcc-8.4.0/opencv-4.2.0-f7wcimpv42jmxqe22uuf5ghmsza6hvic/lib64"
 
 # run video-effect
-./video-effect forest.mp4 edge
+./video-effect video video-edge.mp4 edge 100 frame-100.csv
