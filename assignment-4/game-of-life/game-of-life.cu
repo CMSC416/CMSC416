@@ -104,8 +104,10 @@ void write_output(int *result_matrix, int X_limit, int Y_limit,
 }
 
 /*
-    Copies from src into padded dst. src is widthxheight and dst is (width+padding)x(height+padding)
-*/
+ *  Copies from src into padded dst. src is width X height and dst is (width
+ *  + 2 * padding) X (height + 2 * padding). You want to copy src into the
+ *  middle of dst, leaving the padding untouched.
+ */
 __global__ void padded_matrix_copy(int *dst, int *src, int width, int height, int padding) {
     /* your code here */
 }
