@@ -1,0 +1,16 @@
+mainmodule prefix {
+    readonly CProxy_Main mainProxy;
+    readonly int numChares;
+    readonly CProxy_Prefix prefixArray;
+
+    mainchare Main {
+        entry Main(CkArgMsg∗);
+        entry void done();
+    };
+
+    array [1D] Prefix {
+        entry Prefix();
+        entry void phase(int);
+        entry void passValue(int phase, int value);
+    };
+};
