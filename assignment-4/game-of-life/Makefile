@@ -2,7 +2,7 @@ CXX = g++
 CXXFLAGS = -std=c++11
 CUDA = nvcc
 CUDAFLAGS = -std=c++11 -O2 -Xcompiler "$(CXXFLAGS)"
-GENCODE=--generate-code arch=compute_35,code=sm_35
+GENCODE=--generate-code arch=compute_80,code=sm_80
 
 TARGET = game-of-life
 

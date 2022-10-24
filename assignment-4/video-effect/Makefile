@@ -1,13 +1,13 @@
 CXX = g++
 CXXFLAGS = -std=c++11 -O2
-OPENCV_ROOT=/software/spack-software/2020.05.14/linux-rhel8-ivybridge/gcc-8.4.0/opencv-4.2.0-f7wcimpv42jmxqe22uuf5ghmsza6hvic
-CUDA_ROOT=/software/spack-software/2020.05.14/linux-rhel8-ivybridge/gcc-8.4.0/cuda-10.2.89-av2y5i5crqaikkyl7smufeb7jkuwcgju
+OPENCV_ROOT=/cvmfs/hpcsw.umd.edu/spack-software/2022.06.15/linux-rhel8-zen2/gcc-9.4.0/opencv-4.5.2-xxyodykxk3vuw64tlvm6sujgaxnctgep
+CUDA_ROOT=/cvmfs/hpcsw.umd.edu/spack-software/2022.06.15/linux-rhel8-zen2/gcc-9.4.0/cuda-11.6.2-eonihhhvlh4s2d6riyb7al2qivzn477u
 CXX_INCLUDES = -I$(OPENCV_ROOT)/include/opencv4 -I$(CUDA_ROOT)/include
-CXX_LIBS = -L$(OPENCV_ROOT)/lib64 -lopencv_core -lopencv_videoio -lopencv_imgproc -lcudart
+CXX_LIBS = -L$(OPENCV_ROOT)/lib64 -L$(CUDA_ROOT)/lib64 -lopencv_core -lopencv_videoio -lopencv_imgproc -lcudart
 
 CUDA = nvcc
 CUDAFLAGS = -std=c++11 -O2 -Xcompiler "$(CXXFLAGS)"
-GENCODE = --generate-code arch=compute_35,code=sm_35
+GENCODE = --generate-code arch=compute_80,code=sm_80
 
 TARGET = video-effect
 
