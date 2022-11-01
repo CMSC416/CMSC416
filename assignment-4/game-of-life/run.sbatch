@@ -1,9 +1,11 @@
 #!/bin/bash
 #SBATCH -N 1
-#SBATCH --gres=gpu:1
+#SBATCH -p gpu
+#SBATCH --gres=gpu:a100_1g.5gb
+#SBATCH -A cmsc416-aac
 #SBATCH -o cuda-game-of-life-%A.out
 #SBATCH -J cuda-game-of-life
-#SBATCH -t 00:00:30
+#SBATCH -t 00:00:15
 
 # load cuda libraries
 module load cuda
