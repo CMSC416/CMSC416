@@ -50,15 +50,19 @@ void convolveCPU(float const* in, float *out, int width, int height, float const
 
 /* call the convolveGPU function on each frame */
 float convolveFrames(std::vector<float *> const& framesIn, std::vector<float *> &framesOut, int width, int height, float const* kernel, int kernelWidth, int kernelHeight,
-    cudaStream_t *streams, int numStreams) {
+    cudaStream_t *streams, int numStreams, int blockSizeX, int blockSizeY, int gridSizeX, int gridSizeY) {
 
     cudaEvent_t start, stop;
     cudaEventCreate(&start);
     cudaEventCreate(&stop);
 
+    /*
     dim3 blockSize (blockDimSize, blockDimSize);
     dim3 gridSize ( height/blockSize.x + (height % blockSize.x != 0),
                     width/blockSize.y + (width % blockSize.y != 0) ); 
+    */
+    dim3 blockSize (blockSizeX, blockSizeY);
+    dim3 gridSize (gridSizeX, gridSizeY);
 
     cudaEventRecord(start, 0);
     for (int i = 0; i < framesIn.size(); i += 1) {
