@@ -16,4 +16,4 @@ export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/cvmfs/hpcsw.umd.edu/spack-software/2
 export LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:/cvmfs/hpcsw.umd.edu/spack-software/2022.06.15/linux-rhel8-zen2/gcc-9.4.0/opencv-4.5.2-xxyodykxk3vuw64tlvm6sujgaxnctgep/lib64"
 
 # run video-effect
-./video-effect video video-edge.mp4 edge 100 frame-100.csv
+./video-effect video video-edge.mp4 edge 100 frame-100.csv 8 8 240 135
