@@ -177,8 +177,8 @@ void compute(int *life, int *previous_life, int X_limit, int Y_limit) {
   */
 int main(int argc, char *argv[]) {
 
-    if (argc != 6)
-        perror("Expected arguments: ./life <input_file> <num_of_generations> <X_limit> <Y_limit> <output_file>");
+    if (argc < 6)
+        perror("Expected arguments: ./life <input_file> <num_of_generations> <X_limit> <Y_limit> <output_file> <?blockSizeX> <?blockSizeY> <?gridSizeX> <?gridSizeY>");
 
     string input_file_name = argv[1];
     int num_of_generations = stoi(argv[2]);
@@ -214,6 +214,12 @@ int main(int argc, char *argv[]) {
         X_limit/blockSize.x + (X_limit % blockSize.x != 0),
         Y_limit/blockSize.y + (Y_limit % blockSize.y != 0)
     );
+    if (argc == 10) {
+        blockSize.x = std::stoi(std::string(argv[6]));
+        blockSize.y = std::stoi(std::string(argv[7]));
+        gridSize.x = std::stoi(std::string(argv[8]));
+        gridSize.y = std::stoi(std::string(argv[9]));
+    }
 
     cudaEvent_t start, stop;
     cudaEventCreate (&start);
