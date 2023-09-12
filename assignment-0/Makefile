@@ -1,3 +1,4 @@
+CC     = mpicc
 CFLAGS = -O2
 
 all: cpi
