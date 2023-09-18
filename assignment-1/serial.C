@@ -30,7 +30,7 @@ void read_input_file(int **life, string const &input_file_name) {
         y = stoi(val);
 
         // Populate the life matrix.
-        life[x+1][y+1] = 1;
+        life[x + 1][y + 1] = 1;
     }
     input_file.close();
 }
@@ -63,7 +63,7 @@ void write_output(int **result_matrix, int X_limit, int Y_limit,
 /*
  * Processes the life array for the specified number of iterations.
  */
-void compute(int** life, int** previous_life, int X_limit, int Y_limit) {
+void compute(int **life, int **previous_life, int X_limit, int Y_limit) {
     int neighbors = 0;
 
     // For simulating each generation, calculate the number of live
@@ -81,9 +81,9 @@ void compute(int** life, int** previous_life, int X_limit, int Y_limit) {
                 // A cell is born only when an unoccupied cell has 3 neighbors.
                 if (neighbors == 3) {
                     life[i][j] = 1;
-		} else {
-		    life[i][j] = previous_life[i][j];
-		}
+                } else {
+                    life[i][j] = previous_life[i][j];
+                }
             } else {
                 // An occupied cell survives only if it has either 2 or 3 neighbors.
                 // The cell dies out of loneliness if its neighbor count is 0 or 1.
@@ -91,8 +91,8 @@ void compute(int** life, int** previous_life, int X_limit, int Y_limit) {
                 if (neighbors != 2 and neighbors != 3) {
                     life[i][j]  = 0;
                 } else {
-		    life[i][j] = previous_life[i][j];
-		}
+                    life[i][j] = previous_life[i][j];
+                }
             }
         }
     }
@@ -117,10 +117,10 @@ int main(int argc, char *argv[]) {
     //  2. Column 0
     //  3. Row X_limit+1
     //  4. Column Y_limit+1
-    int **life = new int *[X_limit+2];
-    for (int i = 0; i < X_limit+2; i++) {
-        life[i] = new int[Y_limit+2];
-        for (int j = 0; j < Y_limit+2; j++) {
+    int **life = new int *[X_limit + 2];
+    for (int i = 0; i < X_limit + 2; i++) {
+        life[i] = new int[Y_limit + 2];
+        for (int j = 0; j < Y_limit + 2; j++) {
             life[i][j] = 0;
         }
     }
@@ -128,10 +128,10 @@ int main(int argc, char *argv[]) {
     // Use previous_life to track the pervious state of the board.
     // Pad the previous_life matrix just like the life matrix
     // cells in the following rows and columns to 0:
-    int **previous_life = new int *[X_limit+2];
-    for (int i = 0; i < X_limit+2; i++) {
-        previous_life[i] = new int[Y_limit+2];
-        for (int j = 0; j < Y_limit+2; j++) {
+    int **previous_life = new int *[X_limit + 2];
+    for (int i = 0; i < X_limit + 2; i++) {
+        previous_life[i] = new int[Y_limit + 2];
+        for (int j = 0; j < Y_limit + 2; j++) {
             previous_life[i][j] = 0;
         }
     }
@@ -140,10 +140,10 @@ int main(int argc, char *argv[]) {
 
     clock_t start = clock();
     for (int numg = 0; numg < num_of_generations; numg++) {
-    	// Swap the previous_life matrix and the current life matrix state.
-    	int** temp = previous_life;
-    	previous_life = life;
-    	life = temp;
+        // Swap the previous_life matrix and the current life matrix state.
+        int **temp = previous_life;
+        previous_life = life;
+        life = temp;
 
         compute(life, previous_life, X_limit, Y_limit);
     }
@@ -153,10 +153,10 @@ int main(int argc, char *argv[]) {
     // Write out the final state to the output file.
     write_output(life, X_limit, Y_limit, input_file_name, num_of_generations);
 
-    for (int i = 0; i < X_limit+2; i++) {
+    for (int i = 0; i < X_limit + 2; i++) {
         delete life[i];
     }
-    for (int i = 0; i < X_limit+2; i++) {
+    for (int i = 0; i < X_limit + 2; i++) {
         delete previous_life[i];
     }
     delete[] life;
