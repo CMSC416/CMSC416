@@ -142,7 +142,12 @@ int main(int argc, char *argv[]) {
         compute(life, previous_life, X_limit, Y_limit);
     }
     clock_t end = clock();
-    cout << "Runtime: " << float(end - start) / CLOCKS_PER_SEC << "s \n";
+    float local_time = float(end - start) / CLOCKS_PER_SEC;
+
+    // For serial code: min, avg, max are the same
+    cout << "TIME: Min: " <<  local_time << " s Avg: " << local_time << " s Max: " << local_time << " s\n";
+    // For C code, use:
+    // printf("TIME: Min: %f s Avg: %f s Max: %f s\n", local_time, local_time, local_time);
 
     // Write out the final state to the output file.
     write_output(life, X_limit, Y_limit, input_file_name, num_of_generations);
