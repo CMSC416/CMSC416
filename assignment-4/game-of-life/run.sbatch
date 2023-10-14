@@ -11,7 +11,7 @@
 module load cuda
 
 # first problem
-./game-of-life life.1.256x256.data 100 256 256 result1.csv
+./game-of-life life.1.256x256.data 100 256 256 32 32 result1.csv
 
 # second problem
-./game-of-life life.2.256x256.data 100 256 256 result2.csv
+./game-of-life life.2.256x256.data 100 256 256 32 32 result2.csv

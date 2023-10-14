@@ -198,7 +198,7 @@ void destroyStreams(cudaStream_t streams[MAX_CUDA_STREAMS]) {
 extern float convolveFrames(std::vector<float *> const& framesIn, std::vector<float *> &framesOut, int width, int height, 
                             float const* kernel, int kernelWidth, int kernelHeight,
                             cudaStream_t *streams, int numStreams,
-                            int blockSizeX, int blockSizeY, int gridSizeX, int gridSizeY);
+                            int gridSizeX, int gridSizeY);
 
 
 /*
@@ -206,24 +206,22 @@ extern float convolveFrames(std::vector<float *> const& framesIn, std::vector<fl
  */
 int main(int argc, char **argv) {
 
-    if (argc != 10) {
-        std::cerr << "Usage: " << argv[0] << " <input_file> <output_file> <kernel_name> <frame_idx> <frame_file> <block_size_x> <block_size_y> <grid_size_x> <grid_size_y>" << std::endl;
+    if (argc != 8 && argc != 6) {
+        std::cerr << "Usage: " << argv[0] << " <input_file> <output_file> <kernel_name> <grid_size_x> <grid_size_y> <?frame_idx> <?frame_file>" << std::endl;
         std::exit(1);
     }
 
     const std::string inputFilename(argv[1]);
     const std::string outputFilename (argv[2]);
     const std::string kernelName(argv[3]);
+    const int gridSizeX = std::stoi(std::string(argv[4]));
+    const int gridSizeY = std::stoi(std::string(argv[5]));
     int frameIdx = -1;
     std::string frameFilename;
-    if (argc >= 6) {
-        frameIdx = std::stoi(std::string(argv[4]));
-        frameFilename = std::string(argv[5]);
+    if (argc > 6) {
+        frameIdx = std::stoi(std::string(argv[6]));
+        frameFilename = std::string(argv[7]);
     }
-    const int blockSizeX = std::stoi(std::string(argv[6]));
-    const int blockSizeY = std::stoi(std::string(argv[7]));
-    const int gridSizeX = std::stoi(std::string(argv[8]));
-    const int gridSizeY = std::stoi(std::string(argv[9]));
 
     int kernelWidth, kernelHeight;
     float *kernel = getKernel(kernelName, kernelWidth, kernelHeight);
@@ -244,7 +242,7 @@ int main(int argc, char **argv) {
     float duration = 0.0f;
     while (video.nextFrames(inputBatch)) {
         duration += convolveFrames(inputBatch, outputBatch, video.width(), video.height(), kernel, kernelWidth, 
-            kernelHeight, streams, MAX_CUDA_STREAMS, blockSizeX, blockSizeY, gridSizeX, gridSizeY);
+            kernelHeight, streams, MAX_CUDA_STREAMS, gridSizeX, gridSizeY);
         video.writeFrames(outputBatch);
 
         if (video.numFrames() / frameIdx == batchCounter) {

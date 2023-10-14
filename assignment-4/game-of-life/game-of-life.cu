@@ -16,7 +16,7 @@ constexpr int blockDimSize = 8;
     Previous life has already been copied into life from last generation. You do not need to copy it again.
     X_limit and Y_limit are the problem size.
     This kernel is called with block size blockDimSize x blockDimSize
-    and grid size ⌈X_limit/blockDimSize⌉x⌈Y_limit/blockDimSize⌉.
+    and grid size gridSizeX x gridSizeY.
 */
 __global__ void compute_on_gpu(int *life, int *previous_life, int X_limit, int Y_limit) {
     /* your code here */
@@ -177,14 +177,16 @@ void compute(int *life, int *previous_life, int X_limit, int Y_limit) {
   */
 int main(int argc, char *argv[]) {
 
-    if (argc != 6)
-        perror("Expected arguments: ./life <input_file> <num_of_generations> <X_limit> <Y_limit> <output_file>");
+    if (argc < 8)
+        perror("Expected arguments: ./life <input_file> <num_of_generations> <X_limit> <Y_limit> <gridSizeX> <gridSizeY> <output_file>");
 
     string input_file_name = argv[1];
     int num_of_generations = stoi(argv[2]);
     int X_limit = stoi(argv[3]);
     int Y_limit = stoi(argv[4]);
-    string output_file_name = argv[5];
+    int gridSizeX = stoi(argv[5]);
+    int gridSizeY = stoi(argv[6]);
+    string output_file_name = argv[7];
     
     int *life = new int [X_limit*Y_limit];
     fill_n(life, X_limit*Y_limit, 0);
@@ -210,10 +212,7 @@ int main(int argc, char *argv[]) {
     copy_grid_to_device(previous_life, d_previous_life, (X_limit+2)*(Y_limit+2));
 
     dim3 blockSize (blockDimSize, blockDimSize);
-    dim3 gridSize (
-        X_limit/blockSize.x + (X_limit % blockSize.x != 0),
-        Y_limit/blockSize.y + (Y_limit % blockSize.y != 0)
-    );
+    dim3 gridSize (gridSizeX, gridSizeY);
 
     cudaEvent_t start, stop;
     cudaEventCreate (&start);
