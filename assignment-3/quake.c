@@ -169,7 +169,6 @@ int main(int argc, char **argv)
 
   // printf("numthreads = %d\n", numthreads);
 
-
 /* Read in data from the pack file */
   
   arch_init(argc, argv, &options);
