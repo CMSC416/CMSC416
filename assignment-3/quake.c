@@ -167,7 +167,7 @@ int main(int argc, char **argv)
    numthreads=1;
 #endif
 
-  printf("numthreads = %d\n", numthreads);
+  // printf("numthreads = %d\n", numthreads);
 
 /* Read in data from the pack file */
   
