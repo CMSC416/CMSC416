@@ -10,8 +10,10 @@
 # This is to suppress the warning about not finding a GPU resource
 export OMPI_MCA_mpi_cuda_support=0
 
-# Env variables to reduce performance variability
+# Env variable to reduce performance variability
 export OMP_PROCESSOR_BIND=true
+
+# Set the number of OpenMP threads to 8
 export OMP_NUM_THREADS=8
 
 # Run the executable
