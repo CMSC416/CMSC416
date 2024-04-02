@@ -17,4 +17,4 @@ export OMP_PROCESSOR_BIND=true
 export OMP_NUM_THREADS=8
 
 # Run the executable
-./quake-omp < quake.in > quake.out
+./problem1 > problem1.out
