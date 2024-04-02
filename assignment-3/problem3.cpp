@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <cmath>
 #include <vector>
+#include <cstdio>
 
 #define POINTS_MIN  1.0
 #define POINTS_MAX  1000.0

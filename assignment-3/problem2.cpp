@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <cmath>
 #include <vector>
+#include <cstdio>
 
 const size_t TEST_SIZE = 128;
 

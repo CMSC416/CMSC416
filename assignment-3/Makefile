@@ -16,4 +16,4 @@ problem4: problem4.cpp
 	$(CC) $(CFLAGS) -o problem4 $<
 
 clean:
-	rm -f problem1
+	rm -f problem1 problem2 problem3 problem4
