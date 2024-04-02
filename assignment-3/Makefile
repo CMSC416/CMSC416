@@ -1,10 +1,19 @@
-all: quake
+all: problem1 problem2 problem3 problem4
 
-CC = gcc
-CFLAGS = -O2 -fopenmp
+CC = g++
+CFLAGS = -O2 -openmp
 
-quake: quake.c
-	$(CC) $(CFLAGS) -o quake $< -lm
+problem1: problem1.cpp
+	$(CC) $(CFLAGS) -o problem1 $<
+
+problem2: problem2.cpp
+	$(CC) $(CFLAGS) -o problem2 $<
+
+problem3: problem3.cpp
+	$(CC) $(CFLAGS) -o problem3 $<
+
+problem4: problem4.cpp
+	$(CC) $(CFLAGS) -o problem4 $<
 
 clean:
-	rm -f quake
+	rm -f problem1
