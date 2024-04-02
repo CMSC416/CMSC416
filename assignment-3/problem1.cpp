@@ -3,11 +3,10 @@
 #include <vector>
 #include <limits>
 #include <cstdio>
+#include <iostream>
 
 #define POINTS_MIN  1.0
 #define POINTS_MAX  1000.0
-
-const size_t TEST_SIZE = 1024;
 
 struct Point {
     double x, y;
@@ -44,8 +43,19 @@ double closestPair(std::vector<Point> const& points) {
 }
 
 int main(int argc, char **argv) {
-    std::vector<Point> points(TEST_SIZE);
-    srand(17);
+    int N = 1024;
+    int seed = 17;
+
+    if (argc == 2) {
+        N = std::stoi(argv[1]);
+    }
+    if (argc == 3) {
+	N = std::stoi(argv[1]);
+	seed = std::stoi(argv[2]);
+    }
+
+    std::vector<Point> points(N);
+    srand(seed);
 
     for (size_t i = 0; i < points.size(); i++) {
         points[i].x = (rand() / (double) RAND_MAX) * (POINTS_MAX - POINTS_MIN) + POINTS_MIN;

@@ -10,8 +10,6 @@
 #define M_PI 3.14159265358979323846
 #endif
 
-const size_t TEST_SIZE = 1024;
-
 /* Compute the discrete fourier transform of x. Store the result in output.
    Example:
 
@@ -37,12 +35,22 @@ void dft(std::vector<double> const& x, std::vector< std::complex<double> > &outp
 }
 
 int main(int argc, char **argv) {
-    std::vector<double> x(TEST_SIZE);
-    std::vector< std::complex<double> > correct(TEST_SIZE), test(TEST_SIZE);
+    int N = 1024;
+    int seed = 273;
 
-    srand(273);
+    if (argc == 2) {
+        N = std::stoi(argv[1]);
+    }
+    if (argc == 3) {
+	N = std::stoi(argv[1]);
+	seed = std::stoi(argv[2]);
+    }
 
-    for (int i = 0; i < TEST_SIZE; i += 1) {
+    std::vector<double> x(N);
+    std::vector< std::complex<double> > correct(N), test(N);
+    srand(seed);
+
+    for (int i = 0; i < N; i += 1) {
         x[i] = (rand() / (double) RAND_MAX) * (POINTS_MAX - POINTS_MIN) + POINTS_MIN;
     }
 

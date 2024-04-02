@@ -2,8 +2,7 @@
 #include <cmath>
 #include <vector>
 #include <cstdio>
-
-const size_t TEST_SIZE = 128;
+#include <iostream>
 
 /* Count the number of edges in the directed graph defined by the adjacency
    matrix A. A is an NxN adjacency matrix stored in row-major. A represents a
@@ -29,15 +28,25 @@ int edgeCount(std::vector<int> const& A, size_t N) {
 }
 
 int main(int argc, char **argv) {
-    std::vector<int> A(TEST_SIZE * TEST_SIZE);
+    int N = 128;
+    int seed = 17;
 
-    srand(17);
+    if (argc == 2) {
+        N = std::stoi(argv[1]);
+    }
+    if (argc == 3) {
+	N = std::stoi(argv[1]);
+	seed = std::stoi(argv[2]);
+    }
+
+    std::vector<int> A(N * N);
+    srand(seed);
 
     std::fill(A.begin(), A.end(), 0);
-    for (int i = 0; i < TEST_SIZE; i += 1) {
-        for (int j = 0; j < TEST_SIZE; j += 1) {
+    for (int i = 0; i < N; i += 1) {
+        for (int j = 0; j < N; j += 1) {
             if (rand() % 2 == 0) {
-                A[i * TEST_SIZE + j] = 1;
+                A[i * N + j] = 1;
             }
         }
     }
@@ -45,7 +54,7 @@ int main(int argc, char **argv) {
     // double totalTime = 0.0;
     // double start = omp_get_wtime();
 
-    int count = edgeCount(A, TEST_SIZE);
+    int count = edgeCount(A, N);
     printf("Count : %d\n", count);
 
     // totalTime += omp_get_wtime() - start;
