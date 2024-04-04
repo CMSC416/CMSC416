@@ -50,8 +50,8 @@ int main(int argc, char **argv) {
         N = std::stoi(argv[1]);
     }
     if (argc == 3) {
-	N = std::stoi(argv[1]);
-	seed = std::stoi(argv[2]);
+	    N = std::stoi(argv[1]);
+	    seed = std::stoi(argv[2]);
     }
 
     std::vector<Point> points(N);
