@@ -1,10 +1,14 @@
-CC     = mpicc
+CC     = gcc
+MPICC  = mpicc
 CFLAGS = -O2
 
-all: cpi
+all: cpi-omp cpi-mpi
 
-cpi: cpi.c
-	$(CC) $(CFLAGS) -o $@ $<
+cpi-omp: cpi-omp.c
+	$(CC) $(CFLAGS) -fopenmp -o $@ $<
+
+cpi-mpi: cpi-mpi.c
+	$(MPICC) $(CFLAGS) -o $@ $<
 
 clean:
-	rm -f cpi
+	rm -f cpi-omp cpi-mpi
