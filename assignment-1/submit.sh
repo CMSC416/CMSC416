@@ -1,17 +1,20 @@
 #!/bin/bash
 
-# Allocate 16 cores on a single node for 5 minutes
-#SBATCH -N 1
-#SBATCH --ntasks=16
+# Request 8 cores on a single node for 5 minutes
+#SBATCH --cpus-per-task=8
 #SBATCH -t 00:05:00
 #SBATCH --exclusive
+#SBATCH --mem-bind=local
 
 
 # This is to suppress the warning about not finding a GPU resource
 export OMPI_MCA_mpi_cuda_support=0
 
-# Load OpenMPI
-module load openmpi/gcc
+# Env variable to reduce performance variability
+export OMP_PROCESSOR_BIND=true
+
+# Set the number of OpenMP threads to 8
+export OMP_NUM_THREADS=8
 
 # Run the executable
-mpirun -np 16 ./life &> myfile.out
+./problem1 > problem1.out
