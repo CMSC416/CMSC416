@@ -1,7 +1,7 @@
 all: serial
 
 CXX = g++
-CXXFLAGS = -std=c++11 -O2
+CXXFLAGS = -std=c++11 -O2 -Wall -Wextra -Werror
 
 serial: serial.C
 	$(CXX) $(CXXFLAGS) -o life $<
