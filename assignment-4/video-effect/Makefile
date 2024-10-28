@@ -16,7 +16,7 @@ all: $(TARGET)
 video-effect.o: video-effect.cu
 	$(CUDA) $(CUDAFLAGS) $(GENCODE) -o $@ -c $<
 
-video-effect: driver.cc video-effect.o
+video-effect: driver.cpp video-effect.o
 	$(CXX) $(CXXFLAGS) $(CXX_INCLUDES) -o $@ $^ $(CXX_LIBS)
 
 clean:
