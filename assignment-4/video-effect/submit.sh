@@ -2,7 +2,7 @@
 #SBATCH -N 1
 #SBATCH -p gpu
 #SBATCH --gres=gpu:a100_1g.5gb
-#SBATCH -A cmsc416-aac
+#SBATCH -A cmsc416-class
 #SBATCH -o cuda-video-%A.out
 #SBATCH -J cuda-video
 #SBATCH -t 00:01:00
