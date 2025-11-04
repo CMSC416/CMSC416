@@ -44,14 +44,14 @@ void copy_grid_to_host(double **host_matrix, double *device_matrix, int width, i
 }
 
 /* allocates a new grid on the cpu. exits on error. */
-double **allocate_grid_on_host(int width, int length) {
+double **allocate_grid_on_device(int width, int length) {
     /* your code here */
 
     return 0;
 }
 
 /* frees grid from cpu memory. exits on error */
-void deallocate_grid_on_host(double **matrix) {
+void deallocate_grid_on_device(double **matrix) {
     /* your code here */
 }
 
