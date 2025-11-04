@@ -117,7 +117,7 @@ void write_output(double **result_matrix, int width, int length,
     for (int r = 0; r < length; r++) {
         for (int c = 0; c < width; c++) {
             output_file << result_matrix[r][c];
-            if (r != width - 1) {
+            if (c < width - 1) {
                 output_file << ",";
             } else {
                 output_file << "\n";
