@@ -14,12 +14,12 @@ using namespace std;
 constexpr int blockDimSize = 8;
 
 /* allocates a new grid on the gpu. exits on error. */
-void **allocate_grid_on_device(int width, int length) {
+double *allocate_grid_on_device(int length) {
     /* your code here */
 }
 
 /* frees grid from gpu memory. exits on error */
-void deallocate_grid_on_device(double **matrix) {
+void deallocate_grid_on_device(double *matrix) {
     /* your code here */
 }
 
@@ -30,7 +30,7 @@ void deallocate_grid_on_device(double **matrix) {
     This kernel is called with block size blockDimSize x blockDimSize
     and grid size gridSizeX x gridSizeY.
 */
-__global__ void compute_on_gpu(double **matrix, double **previous_matrix, int X_limit, int Y_limit) {
+__global__ void compute_on_gpu(double *matrix, double *previous_matrix, int X_limit, int Y_limit) {
     /* your code here */
 }
 
