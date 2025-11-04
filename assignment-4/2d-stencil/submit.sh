@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -N 1
 #SBATCH -p gpu
-#SBATCH --gres=gpu:a100_1g.5gb
+#SBATCH --gres=gpu:a0_1g.5gb
 #SBATCH -A cmsc416-class
 #SBATCH -o cuda-2d-stencil-%A.out
 #SBATCH -J cuda-2d-stencil
@@ -17,4 +17,4 @@ module load cuda
 ./2d-stencil 64x128-input.csv 100 64 128 2 4 64x128-output.csv
 
 # third problem
-./2d-stencil 128x128-input.csv 100 128 128 4 4 128x128-output.csv
+./2d-stencil 128x256-input.csv 100 128 128 4 4 128x128-output.csv
