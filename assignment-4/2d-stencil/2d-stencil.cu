@@ -76,10 +76,8 @@ void read_input_file(double *matrix, string const &input_file_name,
         stringstream ss(line);
         int c = 0;
         for (string val; getline(ss, val, ',') && c < X_limit; ++c) {
-            //cout << "'" << val << "' ";
             matrix[_2d_to_1d(r, c, X_limit)] = stod(val);
         }
-        //cout << endl;
     }
 
     input_file.close();
