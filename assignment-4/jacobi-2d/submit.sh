@@ -10,9 +10,21 @@
 # load cuda libraries
 module load cuda
 
-INPUTS="32x32-input.csv 64x128-input.csv 128x128-input.csv"
-for input in ${INPUTS} ; do
-  output=${input/input/output}
-  ./jacobi-2d ${input} 100 ${output}
-done
+num_sms=80
 
+function run_jacobi_2d {
+  x=$1
+  y=$2
+  iterations=$3
+  input=${x}x${y}-input.csv
+  output=${x}x${y}-output.csv
+  grid_dims=$((32 * num_sms))
+  echo "Running jacobi-2d with input: ${input}, output: ${output}, iterations: ${iterations}"
+  ./jacobi-2d ${input} ${output} ${iterations} ${x} ${y} ${grid_dims} ${grid_dims}
+}
+
+INPUTS="32x32-input.csv 64x128-input.csv 128x128-input.csv"
+
+run_jacobi_2d 32 32 100
+run_jacobi_2d 64 128 100
+run_jacobi_2d 128 128 100
