@@ -43,7 +43,7 @@ __global__ void compute_on_gpu(double *matrix, double *previous_matrix, int X_li
  *  + 2 * padding) X (height + 2 * padding). You want to copy src into the
  *  middle of dst, leaving the padding untouched.
  */
-__global__ void padded_matrix_copy(double *dst, double *src, int X_limit, int T_limit, int padding) {
+__global__ void padded_matrix_copy(double *dst, double *src, int X_limit, int Y_limit, int padding) {
     /* your code here */
 }
 
