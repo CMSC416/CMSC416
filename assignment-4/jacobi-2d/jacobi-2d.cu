@@ -144,7 +144,7 @@ int main(int argc, char *argv[]) {
 
         // Expect input file name of the form "<X_limit>x<Y_limit>-*.csv"
         string val;
-        stringstream(ss, input_file_name);
+        stringstream ss(input_file_name);
         getline(ss, val, 'x');
         X_limit = gridSizeX = stoi(val);
         getline(ss, val, '-');
