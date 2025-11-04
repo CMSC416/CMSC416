@@ -9,6 +9,10 @@
 #include "cuda.h"
 using namespace std;
 
+constexpr int 2d_to_1d(int row, int col, int X_limit) {
+    return row * X_limit + col;
+}
+
 /*  use this to set the block size of the kernel launches.
     CUDA kernels will be launched with block size blockDimSize by blockDimSize. */
 constexpr int blockDimSize = 8;
@@ -71,7 +75,7 @@ void read_input_file(double *matrix, string const &input_file_name,
         int c = 0;
         for (string val; getline(ss, val, ',') && c < width; ++c) {
             //cout << "'" << val << "' ";
-            matrix[r][c] = stod(val);
+            matrix[2d_to_1d(r, c, X_limit)] = stod(val);
         }
         //cout << endl;
     }
@@ -95,7 +99,7 @@ void write_output(double *result_matrix, int X_limit, int Y_limit,
     // Output each live cell on a new line. 
     for (int r = 0; r < length; r++) {
         for (int c = 0; c < width; c++) {
-            output_file << result_matrix[r][c];
+            output_file << result_matrix[2d_to_1d(r, c, X_limit)];
             if (c < width - 1) {
                 output_file << ",";
             } else {
