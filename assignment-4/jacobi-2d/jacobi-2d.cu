@@ -2,6 +2,7 @@
 #include <ctime>
 #include <fstream>
 #include <iostream>
+#include <iomanip>
 #include <sstream>
 #include <string>
 #include <assert.h>
@@ -12,14 +13,14 @@ using namespace std;
     CUDA kernels will be launched with block size blockDimSize by blockDimSize. */
 constexpr int blockDimSize = 8;
 
-/*  Your job is to write compute_on_gpu. It computes a single iteration of Game of Life.
-    mesh is the grid to write data into. previous_mesh is the grid from the previous generation.
-    Previous mesh has already been copied into mesh from last generation. You do not need to copy it again.
+/*  Your job is to write compute_on_gpu. It computes a single iteration of the Jacob 2D stencil
+    matrix is the grid to write data into. previous_matrix is the grid from the previous generation.
+    Previous matrix has already been copied into matrix from last generation. You do not need to copy it again.
     X_limit and Y_limit are the problem size.
     This kernel is called with block size blockDimSize x blockDimSize
     and grid size gridSizeX x gridSizeY.
 */
-__global__ void compute_on_gpu(double **mesh, double **previous_mesh, int X_limit, int Y_limit) {
+__global__ void compute_on_gpu(double **matrix, double **previous_matrix, int X_limit, int Y_limit) {
     /* your code here */
 }
 
@@ -58,9 +59,9 @@ void deallocate_grid_on_device(double **matrix) {
 /* allocates a new grid on the cpu. exits on error. */
 double **allocate_grid_on_host(int width, int length) {
     double *buffer = new double[width * length];
-    double **matrix = new double *[width];
-    for (int i = 0; i < width; i++, buffer += length) {
-        matrix[i] = buffer;
+    double **matrix = new double *[length];
+    for (int r = 0; r < length; r++, buffer += length) {
+        matrix[r] = buffer;
     }
 
     // Note: matrix[0] points to the raw buffer
@@ -69,15 +70,15 @@ double **allocate_grid_on_host(int width, int length) {
 
 /* frees grid from cpu memory. exits on error */
 void deallocate_grid_on_host(double **matrix) {
-    delete matrix[0];  // free the buffer
-    delete matrix;     // free the row pointers
+    delete[] matrix[0];  // free the buffer
+    delete[] matrix;     // free the row pointers
 }
 
 /*
  * Reads the input file line by line and stores it in a 2D matrix.
  */
-void read_input_file(double **mesh, string const &input_file_name,
-    int X_limit, int Y_limit) {
+void read_input_file(double **matrix, string const &input_file_name,
+    int width, int length) {
     
     // Open the input file for reading.
     ifstream input_file;
@@ -85,17 +86,15 @@ void read_input_file(double **mesh, string const &input_file_name,
     if (!input_file.is_open())
         perror("Input file cannot be opened");
 
-    int i, j = 0;
-    for (string line; getline(input_file, line); ++i) {
-        //assert(i < Y_limit);
+    int r = 0;
+    for (string line; getline(input_file, line) && r < length; ++r) {
         stringstream ss(line);
-        
-        for (string val; getline(ss, val, ','); ++j) {
-            cout << val << " ";
-            //assert(j < X_limit);
-            mesh[i][j] = stod(val);
+        int c = 0;
+        for (string val; getline(ss, val, ',') && c < width; ++c) {
+            //cout << "'" << val << "' ";
+            matrix[r][c] = stod(val);
         }
-        cout << endl;
+        //cout << endl;
     }
 
     input_file.close();
@@ -104,19 +103,21 @@ void read_input_file(double **mesh, string const &input_file_name,
 /* 
  * Writes out the final state of the 2D matrix to a csv file. 
  */
-void write_output(double **result_matrix, int X_limit, int Y_limit,
+void write_output(double **result_matrix, int width, int length,
                   string const &output_name, int num_of_generations) {
     
     // Open the output file for writing.
     ofstream output_file(output_name);
     if (!output_file.is_open())
         perror("Output file cannot be opened");
+
+    output_file << fixed << setprecision(1);
     
     // Output each live cell on a new line. 
-    for (int i = 0; i < X_limit; i++) {
-        for (int j = 0; j < Y_limit; j++) {
-            output_file << result_matrix[i][j];
-            if (j != Y_limit - 1) {
+    for (int r = 0; r < length; r++) {
+        for (int c = 0; c < width; c++) {
+            output_file << result_matrix[r][c];
+            if (r != Y_limit - 1) {
                 output_file << ",";
             } else {
                 output_file << "\n";
@@ -139,26 +140,8 @@ int main(int argc, char *argv[]) {
     int Y_limit;
     int gridSizeX;
     int gridSizeY;
-    if (argc == 4) {
-        input_file_name = argv[1];
-        output_file_name = argv[2];
-        num_of_generations = stoi(argv[3]);
 
-        string val;
-        stringstream ss(input_file_name);
-        if (!getline(ss, val, 'x')) {
-            perror("Unable to parse grid size from input file name: expected filename of the form <X_limit>x<Y_limit>-*.csv");
-            return 1;
-        }
-        X_limit = gridSizeX = stoi(val);
-        
-        if (!getline(ss, val, '-')) {
-            perror("Unable to parse grid size from input file name: expected filename of the form <X_limit>x<Y_limit>-*.csv");
-            return 1;
-        }
-        Y_limit = gridSizeY = stoi(val);
-
-    } else if (argc == 8) {
+    if (argc == 8) {
         input_file_name = argv[1];
         output_file_name = argv[2];
         num_of_generations = stoi(argv[3]);
@@ -168,36 +151,29 @@ int main(int argc, char *argv[]) {
         gridSizeY = stoi(argv[7]);
 
     } else {
-        perror("Expected arguments: ./mesh <input_file> <output_file> <num_of_generations> [<X_limit> <Y_limit> <gridSizeX> <gridSizeY>]");
+        perror("Expected arguments: ./matrix <input_file> <output_file> <num_of_generations> [<X_limit> <Y_limit> <gridSizeX> <gridSizeY>]");
         return 2;
     }
-    cout << "input file:" << input_file_name << endl;
-    cout << "output file:" << output_file_name << endl;
-    cout << "generations:" << num_of_generations << endl;
-    cout << "limits:" << X_limit << "x" << Y_limit << endl;
-    cout << "grid size:" << gridSizeX << "x" << gridSizeY << endl;
-    
-    double **mesh = allocate_grid_on_host(X_limit, Y_limit);
-    read_input_file(mesh, input_file_name, X_limit, Y_limit);
 
-    // Use previous_mesh to track the pervious state of the board.
-    // Pad the previous_mesh matrix with 0s on all four sides by setting all
+    double **matrix = allocate_grid_on_host(X_limit, Y_limit);
+    read_input_file(matrix, input_file_name, X_limit, Y_limit);
+
+    // Use previous_matrix to track the pervious state of the board.
+    // Pad the previous_matrix matrix with 0s on all four sides by setting all
     // cells in the following rows and columns to 0:
     //  1. Row 0
     //  2. Column 0
     //  3. Row X_limit+1
     //  4. Column Y_limit+1
-    double **previous_mesh = allocate_grid_on_host(X_limit+2, Y_limit+2);
-    
-    read_input_file(mesh, input_file_name, X_limit, Y_limit);
+    double **previous_matrix = allocate_grid_on_host(X_limit+2, Y_limit+2);
 
     // allocate GPU data
-    double **d_mesh = allocate_grid_on_device(X_limit, Y_limit);
-    double **d_previous_mesh = allocate_grid_on_device(X_limit+2, Y_limit+2);
+    double **d_matrix = allocate_grid_on_device(X_limit, Y_limit);
+    double **d_previous_matrix = allocate_grid_on_device(X_limit+2, Y_limit+2);
 
     // copy the grid and tmp grid onto GPU
-    copy_grid_to_device(mesh, d_mesh, X_limit, Y_limit);
-    copy_grid_to_device(previous_mesh, d_previous_mesh, X_limit+2, Y_limit+2);
+    copy_grid_to_device(matrix, d_matrix, X_limit, Y_limit);
+    copy_grid_to_device(previous_matrix, d_previous_matrix, X_limit+2, Y_limit+2);
 
     dim3 blockSize (blockDimSize, blockDimSize);
     dim3 gridSize (gridSizeX, gridSizeY);
@@ -208,10 +184,10 @@ int main(int argc, char *argv[]) {
 
     cudaEventRecord (start, 0);
     for (int numg = 0; numg < num_of_generations; numg++) {
-        /* copy mesh into previous_mesh */
-        padded_matrix_copy<<<gridSize, blockSize>>>(d_previous_mesh, d_mesh, X_limit, Y_limit, 1);
+        /* copy matrix into previous_matrix */
+        padded_matrix_copy<<<gridSize, blockSize>>>(d_previous_matrix, d_matrix, X_limit, Y_limit, 1);
 
-        compute_on_gpu<<<gridSize, blockSize>>>(d_mesh, d_previous_mesh, X_limit, Y_limit);
+        compute_on_gpu<<<gridSize, blockSize>>>(d_matrix, d_previous_matrix, X_limit, Y_limit);
     }
     cudaEventRecord (stop, 0);
     cudaEventSynchronize (stop);
@@ -225,15 +201,15 @@ int main(int argc, char *argv[]) {
 
     // copy the results back onto the CPU
     cudaDeviceSynchronize();
-    copy_grid_to_host(mesh, d_mesh, X_limit, Y_limit);
+    copy_grid_to_host(matrix, d_matrix, X_limit, Y_limit);
 
     // Write out the final state to the output file.
-    write_output(mesh, X_limit, Y_limit, output_file_name, num_of_generations);
+    write_output(matrix, X_limit, Y_limit, output_file_name, num_of_generations);
 
-    deallocate_grid_on_host(mesh);
-    deallocate_grid_on_host(previous_mesh);
-    deallocate_grid_on_device(d_mesh);
-    deallocate_grid_on_device(d_previous_mesh);
+    deallocate_grid_on_host(matrix);
+    deallocate_grid_on_host(previous_matrix);
+    deallocate_grid_on_device(d_matrix);
+    deallocate_grid_on_device(d_previous_matrix);
     return 0;
 }
 
