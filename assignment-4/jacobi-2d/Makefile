@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -std=c++11
+CXXFLAGS = -std=c++11 -g
 CUDA = nvcc
 CUDAFLAGS = -std=c++11 -O2 -Xcompiler "$(CXXFLAGS)"
 GENCODE=--generate-code arch=compute_80,code=sm_80

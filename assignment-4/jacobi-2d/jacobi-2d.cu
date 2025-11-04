@@ -87,13 +87,15 @@ void read_input_file(double **mesh, string const &input_file_name,
 
     int i, j = 0;
     for (string line; getline(input_file, line); ++i) {
-        assert(i < X_limit);
+        //assert(i < Y_limit);
         stringstream ss(line);
         
         for (string val; getline(ss, val, ','); ++j) {
-            assert(j < Y_limit);
+            cout << val << " ";
+            //assert(j < X_limit);
             mesh[i][j] = stod(val);
         }
+        cout << endl;
     }
 
     input_file.close();
@@ -137,17 +139,23 @@ int main(int argc, char *argv[]) {
     int Y_limit;
     int gridSizeX;
     int gridSizeY;
-    if (argc == 3) {
+    if (argc == 4) {
         input_file_name = argv[1];
         output_file_name = argv[2];
         num_of_generations = stoi(argv[3]);
 
-        // Expect input file name of the form "<X_limit>x<Y_limit>-*.csv"
         string val;
         stringstream ss(input_file_name);
-        getline(ss, val, 'x');
+        if (!getline(ss, val, 'x')) {
+            perror("Unable to parse grid size from input file name: expected filename of the form <X_limit>x<Y_limit>-*.csv");
+            return 1;
+        }
         X_limit = gridSizeX = stoi(val);
-        getline(ss, val, '-');
+        
+        if (!getline(ss, val, '-')) {
+            perror("Unable to parse grid size from input file name: expected filename of the form <X_limit>x<Y_limit>-*.csv");
+            return 1;
+        }
         Y_limit = gridSizeY = stoi(val);
 
     } else if (argc == 8) {
@@ -161,8 +169,13 @@ int main(int argc, char *argv[]) {
 
     } else {
         perror("Expected arguments: ./mesh <input_file> <output_file> <num_of_generations> [<X_limit> <Y_limit> <gridSizeX> <gridSizeY>]");
+        return 2;
     }
-
+    cout << "input file:" << input_file_name << endl;
+    cout << "output file:" << output_file_name << endl;
+    cout << "generations:" << num_of_generations << endl;
+    cout << "limits:" << X_limit << "x" << Y_limit << endl;
+    cout << "grid size:" << gridSizeX << "x" << gridSizeY << endl;
     
     double **mesh = allocate_grid_on_host(X_limit, Y_limit);
     read_input_file(mesh, input_file_name, X_limit, Y_limit);
