@@ -144,15 +144,15 @@ int main(int argc, char *argv[]) {
     //  2. Column 0
     //  3. Row X_limit+1
     //  4. Column Y_limit+1
-    double **previous_matrix = new double[(X_limit+2) * (Y_limit+2)];
+    double *previous_matrix = new double[(X_limit+2) * (Y_limit+2)];
 
     // allocate GPU data
-    double **d_matrix = allocate_grid_on_device(X_limit, Y_limit);
-    double **d_previous_matrix = allocate_grid_on_device(X_limit+2, Y_limit+2);
+    double *d_matrix = allocate_grid_on_device(X_limit * Y_limit);
+    double *d_previous_matrix = allocate_grid_on_device((X_limit+2) * (Y_limit+2));
 
     // copy the grid and tmp grid onto GPU
-    copy_grid_to_device(matrix, d_matrix, X_limit, Y_limit);
-    copy_grid_to_device(previous_matrix, d_previous_matrix, X_limit+2, Y_limit+2);
+    copy_grid_to_device(matrix, d_matrix, X_limit * Y_limit);
+    copy_grid_to_device(previous_matrix, d_previous_matrix, (X_limit+2) * (Y_limit+2));
 
     dim3 blockSize (blockDimSize, blockDimSize);
     dim3 gridSize (gridSizeX, gridSizeY);
@@ -162,7 +162,7 @@ int main(int argc, char *argv[]) {
     cudaEventCreate (&stop);
 
     cudaEventRecord (start, 0);
-    for (int numg = 0; numg < num_iterations; numg++) {
+    for (int numiter = 0; numiter < num_iterations; numiter++) {
         /* copy matrix into previous_matrix */
         padded_matrix_copy<<<gridSize, blockSize>>>(d_previous_matrix, d_matrix, X_limit, Y_limit, 1);
 
@@ -180,13 +180,13 @@ int main(int argc, char *argv[]) {
 
     // copy the results back onto the CPU
     cudaDeviceSynchronize();
-    copy_grid_to_host(matrix, d_matrix, X_limit, Y_limit);
+    copy_grid_to_host(matrix, d_matrix, X_limit * Y_limit);
 
     // Write out the final state to the output file.
     write_output(matrix, X_limit, Y_limit, output_file_name, num_iterations);
 
-    deallocate_grid_on_host(matrix);
-    deallocate_grid_on_host(previous_matrix);
+    delete[] matrix;
+    delete[] previous_matrix;
     deallocate_grid_on_device(d_matrix);
     deallocate_grid_on_device(d_previous_matrix);
     return 0;
