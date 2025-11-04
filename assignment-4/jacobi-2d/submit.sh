@@ -27,4 +27,4 @@ INPUTS="32x32-input.csv 64x128-input.csv 128x128-input.csv"
 
 run_jacobi_2d 32 32 100
 run_jacobi_2d 64 128 100
-run_jacobi_2d 128 128 100
+run_jacobi_2d 128 256 100
