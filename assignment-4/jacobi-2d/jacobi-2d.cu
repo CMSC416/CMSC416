@@ -18,7 +18,7 @@ constexpr int blockDimSize = 8;
     This kernel is called with block size blockDimSize x blockDimSize
     and grid size gridSizeX x gridSizeY.
 */
-__global__ void compute_on_gpu(int *mesh, int *previous_mesh, int X_limit, int Y_limit) {
+__global__ void compute_on_gpu(double **mesh, double **previous_mesh, int X_limit, int Y_limit) {
     /* your code here */
 }
 
@@ -27,36 +27,37 @@ __global__ void compute_on_gpu(int *mesh, int *previous_mesh, int X_limit, int Y
  *  + 2 * padding) X (height + 2 * padding). You want to copy src into the
  *  middle of dst, leaving the padding untouched.
  */
-__global__ void padded_matrix_copy(int *dst, int *src, int width, int height, int padding) {
+__global__ void padded_matrix_copy(double **dst, double **src, int width, int height, int padding) {
     /* your code here */
 }
 
-/* allocates a new grid on the gpu. exits on error. */
-int *allocate_grid_on_device(int length) {
+
+/* copy grid from cpu to gpu. exits on error */
+void copy_grid_to_device(double **host_array, double *device_array, int length) {
+    /* your code here */
+}
+
+/* copy grid from gpu to cpu. exits on error */
+void copy_grid_to_host(double **host_array, double *device_array, int length) {
+    /* your code here */
+}
+
+/* allocates a new grid on the cpu. exits on error. */
+double **allocate_grid_on_host(int length) {
     /* your code here */
 
     return 0;
 }
 
-/* frees grid from gpu memory. exits on error */
-void deallocate_grid_on_device(int *array) {
-    /* your code here */
-}
-
-/* copy grid from cpu to gpu. exits on error */
-void copy_grid_to_device(int *host_array, int *device_array, int length) {
-    /* your code here */
-}
-
-/* copy grid from gpu to cpu. exits on error */
-void copy_grid_to_host(int *host_array, int *device_array, int length) {
+/* frees grid from cpu memory. exits on error */
+void deallocate_grid_on_host(double **array) {
     /* your code here */
 }
 
 /*
  * Reads the input file line by line and stores it in a 2D matrix.
  */
-void read_input_file(int *mesh, string const &input_file_name, int Y_limit) {
+void read_input_file(double **mesh, string const &input_file_name, int Y_limit) {
     
     // Open the input file for reading.
     ifstream input_file;
@@ -78,7 +79,7 @@ void read_input_file(int *mesh, string const &input_file_name, int Y_limit) {
         y = stoi(val);
 
         // Populate the mesh matrix in column-major order.
-        mesh[x*Y_limit + y] = 1;
+        mesh[x][y] = 1;
     }
     input_file.close();
 }
@@ -86,7 +87,7 @@ void read_input_file(int *mesh, string const &input_file_name, int Y_limit) {
 /* 
  * Writes out the final state of the 2D matrix to a csv file. 
  */
-void write_output(int *result_matrix, int X_limit, int Y_limit,
+void write_output(double **result_matrix, int X_limit, int Y_limit,
                   string const &output_name, int num_of_generations) {
     
     // Open the output file for writing.
@@ -97,7 +98,7 @@ void write_output(int *result_matrix, int X_limit, int Y_limit,
     // Output each live cell on a new line. 
     for (int i = 0; i < X_limit; i++) {
         for (int j = 0; j < Y_limit; j++) {
-            if (result_matrix[i*Y_limit + j] == 1) {
+            if (result_matrix[i][j] == 1) {
                 output_file << i << "," << j << "\n";
             }
         }
@@ -122,7 +123,7 @@ int main(int argc, char *argv[]) {
     int gridSizeY = stoi(argv[6]);
     string output_file_name = argv[7];
     
-    int *mesh = new int [X_limit*Y_limit];
+    double *mesh = new int [X_limit*Y_limit];
     fill_n(mesh, X_limit*Y_limit, 0);
 
     // Use previous_mesh to track the pervious state of the board.
@@ -132,14 +133,14 @@ int main(int argc, char *argv[]) {
     //  2. Column 0
     //  3. Row X_limit+1
     //  4. Column Y_limit+1
-    int *previous_mesh = new int[(X_limit+2)*(Y_limit+2)];
+    double *previous_mesh = new int[(X_limit+2)*(Y_limit+2)];
     fill_n(previous_mesh, (X_limit+2)*(Y_limit+2), 0);
     
     read_input_file(mesh, input_file_name, Y_limit);
 
     // allocate GPU data
-    int *d_mesh = allocate_grid_on_device(X_limit*Y_limit);
-    int *d_previous_mesh = allocate_grid_on_device((X_limit+2)*(Y_limit+2));
+    double *d_mesh = allocate_grid_on_device(X_limit*Y_limit);
+    double *d_previous_mesh = allocate_grid_on_device((X_limit+2)*(Y_limit+2));
 
     // copy the grid and tmp grid onto GPU
     copy_grid_to_device(mesh, d_mesh, X_limit*Y_limit);
