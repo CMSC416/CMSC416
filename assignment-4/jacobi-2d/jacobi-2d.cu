@@ -12,13 +12,13 @@ using namespace std;
 constexpr int blockDimSize = 8;
 
 /*  Your job is to write compute_on_gpu. It computes a single iteration of Game of Life.
-    life is the grid to write data into. previous_life is the grid from the previous generation.
-    Previous life has already been copied into life from last generation. You do not need to copy it again.
+    mesh is the grid to write data into. previous_mesh is the grid from the previous generation.
+    Previous mesh has already been copied into mesh from last generation. You do not need to copy it again.
     X_limit and Y_limit are the problem size.
     This kernel is called with block size blockDimSize x blockDimSize
     and grid size gridSizeX x gridSizeY.
 */
-__global__ void compute_on_gpu(int *life, int *previous_life, int X_limit, int Y_limit) {
+__global__ void compute_on_gpu(int *mesh, int *previous_mesh, int X_limit, int Y_limit) {
     /* your code here */
 }
 
@@ -34,6 +34,8 @@ __global__ void padded_matrix_copy(int *dst, int *src, int width, int height, in
 /* allocates a new grid on the gpu. exits on error. */
 int *allocate_grid_on_device(int length) {
     /* your code here */
+
+    return 0;
 }
 
 /* frees grid from gpu memory. exits on error */
@@ -54,7 +56,7 @@ void copy_grid_to_host(int *host_array, int *device_array, int length) {
 /*
  * Reads the input file line by line and stores it in a 2D matrix.
  */
-void read_input_file(int *life, string const &input_file_name, int Y_limit) {
+void read_input_file(int *mesh, string const &input_file_name, int Y_limit) {
     
     // Open the input file for reading.
     ifstream input_file;
@@ -75,8 +77,8 @@ void read_input_file(int *life, string const &input_file_name, int Y_limit) {
         getline(ss, val);
         y = stoi(val);
 
-        // Populate the life matrix in column-major order.
-        life[x*Y_limit + y] = 1;
+        // Populate the mesh matrix in column-major order.
+        mesh[x*Y_limit + y] = 1;
     }
     input_file.close();
 }
@@ -110,7 +112,7 @@ void write_output(int *result_matrix, int X_limit, int Y_limit,
 int main(int argc, char *argv[]) {
 
     if (argc < 8)
-        perror("Expected arguments: ./life <input_file> <num_of_generations> <X_limit> <Y_limit> <gridSizeX> <gridSizeY> <output_file>");
+        perror("Expected arguments: ./mesh <input_file> <num_of_generations> <X_limit> <Y_limit> <gridSizeX> <gridSizeY> <output_file>");
 
     string input_file_name = argv[1];
     int num_of_generations = stoi(argv[2]);
@@ -120,28 +122,28 @@ int main(int argc, char *argv[]) {
     int gridSizeY = stoi(argv[6]);
     string output_file_name = argv[7];
     
-    int *life = new int [X_limit*Y_limit];
-    fill_n(life, X_limit*Y_limit, 0);
+    int *mesh = new int [X_limit*Y_limit];
+    fill_n(mesh, X_limit*Y_limit, 0);
 
-    // Use previous_life to track the pervious state of the board.
-    // Pad the previous_life matrix with 0s on all four sides by setting all
+    // Use previous_mesh to track the pervious state of the board.
+    // Pad the previous_mesh matrix with 0s on all four sides by setting all
     // cells in the following rows and columns to 0:
     //  1. Row 0
     //  2. Column 0
     //  3. Row X_limit+1
     //  4. Column Y_limit+1
-    int *previous_life = new int[(X_limit+2)*(Y_limit+2)];
-    fill_n(previous_life, (X_limit+2)*(Y_limit+2), 0);
+    int *previous_mesh = new int[(X_limit+2)*(Y_limit+2)];
+    fill_n(previous_mesh, (X_limit+2)*(Y_limit+2), 0);
     
-    read_input_file(life, input_file_name, Y_limit);
+    read_input_file(mesh, input_file_name, Y_limit);
 
     // allocate GPU data
-    int *d_life = allocate_grid_on_device(X_limit*Y_limit);
-    int *d_previous_life = allocate_grid_on_device((X_limit+2)*(Y_limit+2));
+    int *d_mesh = allocate_grid_on_device(X_limit*Y_limit);
+    int *d_previous_mesh = allocate_grid_on_device((X_limit+2)*(Y_limit+2));
 
     // copy the grid and tmp grid onto GPU
-    copy_grid_to_device(life, d_life, X_limit*Y_limit);
-    copy_grid_to_device(previous_life, d_previous_life, (X_limit+2)*(Y_limit+2));
+    copy_grid_to_device(mesh, d_mesh, X_limit*Y_limit);
+    copy_grid_to_device(previous_mesh, d_previous_mesh, (X_limit+2)*(Y_limit+2));
 
     dim3 blockSize (blockDimSize, blockDimSize);
     dim3 gridSize (gridSizeX, gridSizeY);
@@ -152,10 +154,10 @@ int main(int argc, char *argv[]) {
 
     cudaEventRecord (start, 0);
     for (int numg = 0; numg < num_of_generations; numg++) {
-        /* copy life into previous_life */
-        padded_matrix_copy<<<gridSize, blockSize>>>(d_previous_life, d_life, X_limit, Y_limit, 1);
+        /* copy mesh into previous_mesh */
+        padded_matrix_copy<<<gridSize, blockSize>>>(d_previous_mesh, d_mesh, X_limit, Y_limit, 1);
 
-        compute_on_gpu<<<gridSize, blockSize>>>(d_life, d_previous_life, X_limit, Y_limit);
+        compute_on_gpu<<<gridSize, blockSize>>>(d_mesh, d_previous_mesh, X_limit, Y_limit);
     }
     cudaEventRecord (stop, 0);
     cudaEventSynchronize (stop);
@@ -169,15 +171,15 @@ int main(int argc, char *argv[]) {
 
     // copy the results back onto the CPU
     cudaDeviceSynchronize();
-    copy_grid_to_host(life, d_life, X_limit*Y_limit);
+    copy_grid_to_host(mesh, d_mesh, X_limit*Y_limit);
 
     // Write out the final state to the output file.
-    write_output(life, X_limit, Y_limit, output_file_name, num_of_generations);
+    write_output(mesh, X_limit, Y_limit, output_file_name, num_of_generations);
 
-    delete[] life;
-    delete[] previous_life;
-    deallocate_grid_on_device(d_life);
-    deallocate_grid_on_device(d_previous_life);
+    delete[] mesh;
+    delete[] previous_mesh;
+    deallocate_grid_on_device(d_mesh);
+    deallocate_grid_on_device(d_previous_mesh);
     return 0;
 }
 
