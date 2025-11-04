@@ -58,7 +58,7 @@ void deallocate_grid_on_device(double **matrix) {
 /* allocates a new grid on the cpu. exits on error. */
 double **allocate_grid_on_host(int width, int length) {
     double *buffer = new double[width * length];
-    double **grid = new double *[width];
+    double **matrix = new double *[width];
     for (int i = 0; i < width; i++, buffer += length) {
         matrix[i] = buff;
     }
@@ -130,16 +130,39 @@ void write_output(double **result_matrix, int X_limit, int Y_limit,
   */
 int main(int argc, char *argv[]) {
 
-    if (argc < 8)
-        perror("Expected arguments: ./mesh <input_file> <num_of_generations> <X_limit> <Y_limit> <gridSizeX> <gridSizeY> <output_file>");
+    string input_file_name;
+    string output_file_name;
+    int num_of_generations;
+    int X_limit;
+    int Y_limit;
+    int gridSizeX;
+    int gridSizeY;
+    if (argc == 3) {
+        input_file_name = argv[1];
+        output_file_name = argv[2];
+        num_of_generations = stoi(argv[3]);
 
-    string input_file_name = argv[1];
-    int num_of_generations = stoi(argv[2]);
-    int X_limit = stoi(argv[3]);
-    int Y_limit = stoi(argv[4]);
-    int gridSizeX = stoi(argv[5]);
-    int gridSizeY = stoi(argv[6]);
-    string output_file_name = argv[7];
+        // Expect input file name of the form "<X_limit>x<Y_limit>-*.csv"
+        string val;
+        stringstream(ss, input_file_name);
+        getline(ss, val, 'x');
+        X_limit = gridSizeX = stoi(val);
+        getline(ss, val, '-');
+        Y_limit = gridSizeY = stoi(val);
+
+    } else if (argc == 8) {
+        input_file_name = argv[1];
+        output_file_name = argv[2];
+        num_of_generations = stoi(argv[3]);
+        X_limit = stoi(argv[4]);
+        Y_limit = stoi(argv[5]);
+        gridSizeX = stoi(argv[6]);
+        gridSizeY = stoi(argv[7]);
+
+    } else {
+        perror("Expected arguments: ./mesh <input_file> <output_file> <num_of_generations> [<X_limit> <Y_limit> <gridSizeX> <gridSizeY>]");
+    }
+
     
     double **mesh = allocate_grid_on_host(X_limit*Y_limit+2);
     read_input_file(mesh, input_file_name, Y_limit);
