@@ -9,7 +9,7 @@
 #include "cuda.h"
 using namespace std;
 
-constexpr int 2d_to_1d(int row, int col, int X_limit) {
+constexpr int _2d_to_1d(int row, int col, int X_limit) {
     return row * X_limit + col;
 }
 
@@ -20,6 +20,8 @@ constexpr int blockDimSize = 8;
 /* allocates a new grid on the gpu. exits on error. */
 double *allocate_grid_on_device(int size) {
     /* your code here */
+    
+    return NULL;
 }
 
 /* frees grid from gpu memory. exits on error */
@@ -70,12 +72,12 @@ void read_input_file(double *matrix, string const &input_file_name,
         perror("Input file cannot be opened");
 
     int r = 0;
-    for (string line; getline(input_file, line) && r < length; ++r) {
+    for (string line; getline(input_file, line) && r < Y_limit; ++r) {
         stringstream ss(line);
         int c = 0;
-        for (string val; getline(ss, val, ',') && c < width; ++c) {
+        for (string val; getline(ss, val, ',') && c < X_limit; ++c) {
             //cout << "'" << val << "' ";
-            matrix[2d_to_1d(r, c, X_limit)] = stod(val);
+            matrix[_2d_to_1d(r, c, X_limit)] = stod(val);
         }
         //cout << endl;
     }
@@ -97,10 +99,10 @@ void write_output(double *result_matrix, int X_limit, int Y_limit,
     output_file << fixed << setprecision(1);
     
     // Output each live cell on a new line. 
-    for (int r = 0; r < length; r++) {
-        for (int c = 0; c < width; c++) {
-            output_file << result_matrix[2d_to_1d(r, c, X_limit)];
-            if (c < width - 1) {
+    for (int r = 0; r < X_limit; r++) {
+        for (int c = 0; c < Y_limit; c++) {
+            output_file << result_matrix[_2d_to_1d(r, c, X_limit)];
+            if (c < X_limit - 1) {
                 output_file << ",";
             } else {
                 output_file << "\n";
