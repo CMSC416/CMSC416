@@ -99,8 +99,8 @@ void write_output(double *result_matrix, int X_limit, int Y_limit,
     output_file << fixed << setprecision(1);
     
     // Output each live cell on a new line. 
-    for (int r = 0; r < X_limit; r++) {
-        for (int c = 0; c < Y_limit; c++) {
+    for (int r = 0; r < Y_limit; r++) {
+        for (int c = 0; c < X_limit; c++) {
             output_file << result_matrix[_2d_to_1d(r, c, X_limit)];
             if (c < X_limit - 1) {
                 output_file << ",";
