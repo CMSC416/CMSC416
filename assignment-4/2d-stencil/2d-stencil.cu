@@ -13,9 +13,19 @@ using namespace std;
     CUDA kernels will be launched with block size blockDimSize by blockDimSize. */
 constexpr int blockDimSize = 8;
 
-/*  Your job is to write compute_on_gpu. It computes a single iteration of the Jacob 2D stencil
-    matrix is the grid to write data into. previous_matrix is the grid from the previous generation.
-    Previous matrix has already been copied into matrix from last generation. You do not need to copy it again.
+/* allocates a new grid on the gpu. exits on error. */
+void **allocate_grid_on_device(int width, int length) {
+    /* your code here */
+}
+
+/* frees grid from gpu memory. exits on error */
+void deallocate_grid_on_device(double **matrix) {
+    /* your code here */
+}
+
+/*  Your job is to write compute_on_gpu. It computes a single iteration of the 2D stencil.
+    matrix is the grid to write data into. previous_matrix is the grid from the previous iteration.
+    Previous matrix has already been copied into matrix from the last iteration. You do not need to copy it again.
     X_limit and Y_limit are the problem size.
     This kernel is called with block size blockDimSize x blockDimSize
     and grid size gridSizeX x gridSizeY.
@@ -33,7 +43,6 @@ __global__ void padded_matrix_copy(double **dst, double **src, int width, int he
     /* your code here */
 }
 
-
 /* copy grid from cpu to gpu. exits on error */
 void copy_grid_to_device(double **host_matrix, double **device_matrix, int width, int length) {
     /* your code here */
@@ -44,41 +53,11 @@ void copy_grid_to_host(double **host_matrix, double **device_matrix, int width, 
     /* your code here */
 }
 
-/* allocates a new grid on the cpu. exits on error. */
-double **allocate_grid_on_device(int width, int length) {
-    /* your code here */
-
-    return 0;
-}
-
-/* frees grid from cpu memory. exits on error */
-void deallocate_grid_on_device(double **matrix) {
-    /* your code here */
-}
-
-/* allocates a new grid on the cpu. exits on error. */
-double **allocate_grid_on_host(int width, int length) {
-    double *buffer = new double[width * length];
-    double **matrix = new double *[length];
-    for (int r = 0; r < length; r++, buffer += width) {
-        matrix[r] = buffer;
-    }
-
-    // Note: matrix[0] points to the raw buffer
-    return matrix;
-}
-
-/* frees grid from cpu memory. exits on error */
-void deallocate_grid_on_host(double **matrix) {
-    delete[] matrix[0];  // free the buffer
-    delete[] matrix;     // free the row pointers
-}
-
 /*
  * Reads the input file line by line and stores it in a 2D matrix.
  */
 void read_input_file(double **matrix, string const &input_file_name,
-    int width, int length) {
+    int X_limit, int Y_limit) {
     
     // Open the input file for reading.
     ifstream input_file;
@@ -103,8 +82,8 @@ void read_input_file(double **matrix, string const &input_file_name,
 /* 
  * Writes out the final state of the 2D matrix to a csv file. 
  */
-void write_output(double **result_matrix, int width, int length,
-                  string const &output_name, int num_of_generations) {
+void write_output(double **result_matrix, int X_limit, int Y_limit,
+                  string const &output_name, int num_iterations) {
     
     // Open the output file for writing.
     ofstream output_file(output_name);
@@ -135,7 +114,7 @@ int main(int argc, char *argv[]) {
 
     string input_file_name;
     string output_file_name;
-    int num_of_generations;
+    int num_iterations;
     int X_limit;
     int Y_limit;
     int gridSizeX;
@@ -143,19 +122,19 @@ int main(int argc, char *argv[]) {
 
     if (argc == 8) {
         input_file_name = argv[1];
-        output_file_name = argv[2];
-        num_of_generations = stoi(argv[3]);
-        X_limit = stoi(argv[4]);
-        Y_limit = stoi(argv[5]);
-        gridSizeX = stoi(argv[6]);
-        gridSizeY = stoi(argv[7]);
+        num_iterations = stoi(argv[2]);
+        X_limit = stoi(argv[3]);
+        Y_limit = stoi(argv[4]);
+        gridSizeX = stoi(argv[5]);
+        gridSizeY = stoi(argv[6]);
+        output_file_name = argv[7];
 
     } else {
-        perror("Expected arguments: ./matrix <input_file> <output_file> <num_of_generations> [<X_limit> <Y_limit> <gridSizeX> <gridSizeY>]");
+        perror("Expected arguments: ./matrix <input_file> <output_file> <num_iterations> [<X_limit> <Y_limit> <gridSizeX> <gridSizeY>]");
         return 2;
     }
 
-    double **matrix = allocate_grid_on_host(X_limit, Y_limit);
+    double *matrix = new double [X_limit * Y_limit];
     read_input_file(matrix, input_file_name, X_limit, Y_limit);
 
     // Use previous_matrix to track the pervious state of the board.
@@ -165,7 +144,7 @@ int main(int argc, char *argv[]) {
     //  2. Column 0
     //  3. Row X_limit+1
     //  4. Column Y_limit+1
-    double **previous_matrix = allocate_grid_on_host(X_limit+2, Y_limit+2);
+    double **previous_matrix = new double[(X_limit+2) * (Y_limit+2)];
 
     // allocate GPU data
     double **d_matrix = allocate_grid_on_device(X_limit, Y_limit);
@@ -183,7 +162,7 @@ int main(int argc, char *argv[]) {
     cudaEventCreate (&stop);
 
     cudaEventRecord (start, 0);
-    for (int numg = 0; numg < num_of_generations; numg++) {
+    for (int numg = 0; numg < num_iterations; numg++) {
         /* copy matrix into previous_matrix */
         padded_matrix_copy<<<gridSize, blockSize>>>(d_previous_matrix, d_matrix, X_limit, Y_limit, 1);
 
@@ -204,7 +183,7 @@ int main(int argc, char *argv[]) {
     copy_grid_to_host(matrix, d_matrix, X_limit, Y_limit);
 
     // Write out the final state to the output file.
-    write_output(matrix, X_limit, Y_limit, output_file_name, num_of_generations);
+    write_output(matrix, X_limit, Y_limit, output_file_name, num_iterations);
 
     deallocate_grid_on_host(matrix);
     deallocate_grid_on_host(previous_matrix);
