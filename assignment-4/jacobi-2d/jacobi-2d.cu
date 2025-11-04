@@ -59,10 +59,11 @@ void deallocate_grid_on_device(double **matrix) {
 double **allocate_grid_on_host(int width, int length) {
     double *buffer = new double[width * length];
     double **grid = new double *[width];
-    for (int i = 0; i < width; i++; buffer += length) {
+    for (int i = 0; i < width; i++, buffer += length) {
         matrix[i] = buff;
     }
 
+    // Note: matrix[0] points to the raw buffer
     return matrix;
 }
 
