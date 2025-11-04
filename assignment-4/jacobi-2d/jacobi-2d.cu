@@ -60,7 +60,7 @@ void deallocate_grid_on_device(double **matrix) {
 double **allocate_grid_on_host(int width, int length) {
     double *buffer = new double[width * length];
     double **matrix = new double *[length];
-    for (int r = 0; r < length; r++, buffer += length) {
+    for (int r = 0; r < length; r++, buffer += width) {
         matrix[r] = buffer;
     }
 
@@ -117,7 +117,7 @@ void write_output(double **result_matrix, int width, int length,
     for (int r = 0; r < length; r++) {
         for (int c = 0; c < width; c++) {
             output_file << result_matrix[r][c];
-            if (r != Y_limit - 1) {
+            if (r != width - 1) {
                 output_file << ",";
             } else {
                 output_file << "\n";
