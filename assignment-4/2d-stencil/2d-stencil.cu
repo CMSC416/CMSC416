@@ -14,7 +14,7 @@ using namespace std;
 constexpr int blockDimSize = 8;
 
 /* allocates a new grid on the gpu. exits on error. */
-double *allocate_grid_on_device(int length) {
+double *allocate_grid_on_device(int size) {
     /* your code here */
 }
 
@@ -39,24 +39,24 @@ __global__ void compute_on_gpu(double *matrix, double *previous_matrix, int X_li
  *  + 2 * padding) X (height + 2 * padding). You want to copy src into the
  *  middle of dst, leaving the padding untouched.
  */
-__global__ void padded_matrix_copy(double **dst, double **src, int width, int height, int padding) {
+__global__ void padded_matrix_copy(double *dst, double *src, int X_limit, int T_limit, int padding) {
     /* your code here */
 }
 
 /* copy grid from cpu to gpu. exits on error */
-void copy_grid_to_device(double **host_matrix, double **device_matrix, int width, int length) {
+void copy_grid_to_device(double *host_matrix, double *device_matrix, int size) {
     /* your code here */
 }
 
 /* copy grid from gpu to cpu. exits on error */
-void copy_grid_to_host(double **host_matrix, double **device_matrix, int width, int length) {
+void copy_grid_to_host(double *host_matrix, double *device_matrix, int size) {
     /* your code here */
 }
 
 /*
- * Reads the input file line by line and stores it in a 2D matrix.
+ * Reads the input file line by line and stores it in a 1D matrix.
  */
-void read_input_file(double **matrix, string const &input_file_name,
+void read_input_file(double *matrix, string const &input_file_name,
     int X_limit, int Y_limit) {
     
     // Open the input file for reading.
@@ -82,7 +82,7 @@ void read_input_file(double **matrix, string const &input_file_name,
 /* 
  * Writes out the final state of the 2D matrix to a csv file. 
  */
-void write_output(double **result_matrix, int X_limit, int Y_limit,
+void write_output(double *result_matrix, int X_limit, int Y_limit,
                   string const &output_name, int num_iterations) {
     
     // Open the output file for writing.
