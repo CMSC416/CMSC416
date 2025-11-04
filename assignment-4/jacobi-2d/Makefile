@@ -4,7 +4,7 @@ CUDA = nvcc
 CUDAFLAGS = -std=c++11 -O2 -Xcompiler "$(CXXFLAGS)"
 GENCODE=--generate-code arch=compute_80,code=sm_80
 
-TARGET = jacobi-2d
+TARGET = 2d-stencil
 
 .PHONE: all debug
 all: $(TARGET)
