@@ -95,7 +95,7 @@ void write_output(double *result_matrix, int X_limit, int Y_limit,
     if (!output_file.is_open())
         perror("Output file cannot be opened");
 
-    output_file << fixed << setprecision(1);
+    output_file << fixed << setprecision(3);
 
     // Output each live cell on a new line.
     for (int r = 0; r < Y_limit; r++) {
