@@ -9,6 +9,7 @@
 #include "cuda.h"
 using namespace std;
 
+/* converts from 2D to 1D array indices */
 constexpr int _2d_to_1d(int row, int col, int X_limit) {
     return row * X_limit + col;
 }
@@ -20,7 +21,7 @@ constexpr int blockDimSize = 8;
 /* allocates a new grid on the gpu. exits on error. */
 double *allocate_grid_on_device(int size) {
     /* your code here */
-    
+
     return NULL;
 }
 
@@ -64,7 +65,7 @@ void copy_grid_to_host(double *host_matrix, double *device_matrix, int size) {
  */
 void read_input_file(double *matrix, string const &input_file_name,
     int X_limit, int Y_limit) {
-    
+
     // Open the input file for reading.
     ifstream input_file;
     input_file.open(input_file_name);
@@ -83,20 +84,20 @@ void read_input_file(double *matrix, string const &input_file_name,
     input_file.close();
 }
 
-/* 
- * Writes out the final state of the 2D matrix to a csv file. 
+/*
+ * Writes out the final state of the 2D matrix to a csv file.
  */
 void write_output(double *result_matrix, int X_limit, int Y_limit,
                   string const &output_name, int num_iterations) {
-    
+
     // Open the output file for writing.
     ofstream output_file(output_name);
     if (!output_file.is_open())
         perror("Output file cannot be opened");
 
     output_file << fixed << setprecision(1);
-    
-    // Output each live cell on a new line. 
+
+    // Output each live cell on a new line.
     for (int r = 0; r < Y_limit; r++) {
         for (int c = 0; c < X_limit; c++) {
             output_file << result_matrix[_2d_to_1d(r, c, X_limit)];
@@ -174,7 +175,7 @@ int main(int argc, char *argv[]) {
     }
     cudaEventRecord (stop, 0);
     cudaEventSynchronize (stop);
-    
+
     float elapsed;
     cudaEventElapsedTime (&elapsed, start, stop);
     cout << "Runtime: " << elapsed/1000.0 << " s\n";
