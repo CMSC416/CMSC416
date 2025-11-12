@@ -5,8 +5,8 @@
 #include <fstream>  // ofstream
 #include <cstdint>  // uint8_t
 #include <cassert>  // assert
+#include <cstdlib>
 #include <opencv2/opencv.hpp>   // VideoCapture, VideoWriter, Mat, cvtColor
-#include <cuda_runtime_api.h> // cudaMalloc, cudaFree, cudaMemcpy
 
 /*
  *  Driver program for reading and writing the videos. You shouldn't need to edit this.
@@ -14,6 +14,25 @@
 
 /* set the maximum number of cuda streams */
 constexpr int MAX_CUDA_STREAMS = 8;
+
+#ifdef DEBUG
+    using cudaStream_t = void *;
+    #define cudaStreamCreateWithFlags(x, y)
+    #define cudaStreamDestroy(x)
+
+    template <typename T>
+    void myMalloc(T &ptr, size_t size) {
+        ptr = (T) malloc(size);
+    }
+    #define myFree(x) free(x)
+    #define myMemcpy(src, dest,size, type) memcpy(src, dest, size)
+#else
+    #include <cuda_runtime_api.h> // cudaMalloc, cudaFree, cudaMemcpy
+    
+    #define myMalloc(ptr, size) cudaMalloc((void **) &ptr, size)
+    #define myFree(x) cudaFree(x)
+    #define myMemcpy(src, dest, size, type) cudaMemcpy(dest, src, size, type)
+#endif
 
 namespace VideoUtilities {
 /*  
@@ -63,7 +82,7 @@ class VideoUtility {
                 if (!success) {
                     /* clear remaining elements in rawData */
                     for (int j = batch.size()-1; j >= i; j -= 1) {
-                        cudaFree(batch.at(j));
+                        myFree(batch.at(j));
                         batch.pop_back();
                     }
                     break;
@@ -74,7 +93,7 @@ class VideoUtility {
                 tmpReadMatUnsigned_.convertTo(tmpReadMatFloat_, CV_32FC3, 1/255.0f);
 
                 /* copy to gpu */ 
-                cudaMemcpy(batch.at(i), tmpReadMatFloat_.data, width_*height_*3*sizeof(float), cudaMemcpyHostToDevice);
+                myMemcpy(batch.at(i), tmpReadMatFloat_.data, width_*height_*3*sizeof(float), cudaMemcpyHostToDevice);
             }
 
             return !batch.empty();
@@ -83,7 +102,7 @@ class VideoUtility {
         /* write a batch of frames into video file */
         void writeFrames(std::vector<float *> &batch) {
             for (auto ptr : batch) {
-                cudaMemcpy(scratch_, ptr, width_*height_*3*sizeof(float), cudaMemcpyDeviceToHost);
+                myMemcpy(scratch_, ptr, width_*height_*3*sizeof(float), cudaMemcpyDeviceToHost);
                 cv::Mat tmpMat(height_, width_, CV_32FC3, scratch_);
                 tmpMat.convertTo(tmpMat, CV_8UC3, 255.0f);
                 outVideo_.write(tmpMat);
@@ -92,7 +111,7 @@ class VideoUtility {
 
         /* dump csv of frame */
         void dumpFrame(std::vector<float *> &batch, int idx, std::string const& fname) {
-            cudaMemcpy(scratch_, batch.at(idx), width_*height_*3*sizeof(float), cudaMemcpyDeviceToHost);
+            myMemcpy(scratch_, batch.at(idx), width_*height_*3*sizeof(float), cudaMemcpyDeviceToHost);
 
             std::ofstream outFile(fname);
             for (int i = 0; i < height_; i += 1) {
@@ -113,13 +132,13 @@ class VideoUtility {
         void allocateFrames(std::vector<float *> &rawData, int batchSize=10) {
             rawData.resize(batchSize);
             for (auto &ptr : rawData) {
-                cudaMalloc((void **)&ptr, width_*height_*3*sizeof(float));
+                myMalloc(ptr, width_*height_*3*sizeof(float));
             }
         }
 
         void freeFrames(std::vector<float *> &rawData) {
             for (auto ptr : rawData)
-                cudaFree(ptr);
+                myFree(ptr);
 
             rawData.clear();
         }
@@ -176,10 +195,14 @@ float *getKernel(std::string const& kernelName, int &kernelWidth, int &kernelHei
         std::exit(1);
     }
 
+#ifdef DEBUG
+    return cpuKernel;
+#else
     /* move kernel onto gpu */
     cudaMalloc((void **)&gpuKernel, kernelWidth*kernelHeight*sizeof(float));
     cudaMemcpy(gpuKernel, cpuKernel, kernelWidth*kernelHeight*sizeof(float), cudaMemcpyHostToDevice);
     return gpuKernel;
+#endif
 }
 
 void createStreams(cudaStream_t streams[MAX_CUDA_STREAMS]) {
@@ -254,7 +277,10 @@ int main(int argc, char **argv) {
     /* clean up */
     video.freeFrames(inputBatch);
     video.freeFrames(outputBatch);
-    cudaFree(kernel);
+#ifndef DEBUG
+    // On CPU this is a literal/never malloc-ed
+    myFree(kernel);
+#endif
     destroyStreams(streams);
 
     /* write out timing info */

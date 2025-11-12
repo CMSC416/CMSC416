@@ -5,16 +5,22 @@ CUDA_ROOT=/cvmfs/hpcsw.umd.edu/spack-software/2022.06.15/linux-rhel8-zen2/gcc-9.
 CXX_INCLUDES = -I$(OPENCV_ROOT)/include/opencv4 -I$(CUDA_ROOT)/include
 CXX_LIBS = -L$(OPENCV_ROOT)/lib64 -L$(CUDA_ROOT)/lib64 -lopencv_core -lopencv_videoio -lopencv_imgproc -lcudart
 
-CUDA = nvcc
-CUDAFLAGS = -std=c++11 -O2 -Xcompiler "$(CXXFLAGS)"
-GENCODE = --generate-code arch=compute_80,code=sm_80
+CUDA := nvcc
+CUDAFLAGS := -std=c++11 -O2 -x cu -Xcompiler "$(CXXFLAGS)"
+CUDAFLAGS += --generate-code arch=compute_80,code=sm_80
 
 TARGET = video-effect
 
+.PHONY: all debug
 all: $(TARGET)
 
-video-effect.o: video-effect.cu
-	$(CUDA) $(CUDAFLAGS) $(GENCODE) -o $@ -c $<
+debug: CXXFLAGS += -DDEBUG -g -fsanitize=address
+debug: CUDA := $(CXX)
+debug: CUDAFLAGS := $(CXXFLAGS)
+debug: $(TARGET)
+
+video-effect.o: video-effect.cpp
+	$(CUDA) $(CUDAFLAGS) -o $@ -c $<
 
 video-effect: driver.cpp video-effect.o
 	$(CXX) $(CXXFLAGS) $(CXX_INCLUDES) -o $@ $^ $(CXX_LIBS)
