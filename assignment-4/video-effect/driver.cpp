@@ -268,7 +268,7 @@ int main(int argc, char **argv) {
             kernelHeight, streams, MAX_CUDA_STREAMS, gridSizeX, gridSizeY);
         video.writeFrames(outputBatch);
 
-        if (video.numFrames() / frameIdx == batchCounter) {
+        if (frameIdx > 0 && video.numFrames() / frameIdx == batchCounter) {
             video.dumpFrame(outputBatch, frameIdx % batchSize, frameFilename);
         }
         batchCounter += 1;
