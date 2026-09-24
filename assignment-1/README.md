@@ -1,7 +1,5 @@
 # Assignment 1: OpenMP
 
-**Due: September 30, 2026 @ 11:59 PM Eastern Time**
-
 The purpose of this programming assignment is to gain experience in parallel
 programming on a cluster and OpenMP. You will start with working serial
 versions of four different programs, and add OpenMP directives to parallelize
