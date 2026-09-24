@@ -107,7 +107,7 @@ export OMP_PROCESSOR_BIND=true
 
 You must submit the following files and no other files:
 
-- A short PDF report (called `report-assign1.pdf`) that describes what you did.
+- A <2-page PDF report (called `report-assign1.pdf`) that describes what you did.
 - In the same report, discuss the performance of running each problem with the larger sizes above (for 1, 2, 4, 8, 16, 32, and 64 threads on a single node).
 - Modified problem1.cpp, problem2.cpp, problem3.cpp, and problem4.cpp files with OpenMP directives.
 - A Makefile to compile all four problems.
