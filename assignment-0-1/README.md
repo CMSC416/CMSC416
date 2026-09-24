@@ -1,6 +1,6 @@
 # Assignment 0.1: Using the Linux Shell on HPC Clusters
 
-**Due: September 18, 2025 @ 11:59 PM Eastern Time**
+**Due: September 10, 2026 @ 11:59 PM Eastern Time**
 
 The purpose of this programming assignment is to gain experience in using a
 Linux shell and shell commands for tasks such as compiling a program,
