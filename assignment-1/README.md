@@ -124,9 +124,9 @@ You should put the code files, Makefile and report in a single directory (named
 ## Tips
 
 - [zaratan primer](https://www.cs.umd.edu/class/fall2026/cmsc416/zaratan.shtml)
-- omp_get_wtime() [example](https://www.openmp.org/spec-html/5.0/openmpsu160.html)
-- Use the compiler flag -g while debugging but -O2 when collecting performance numbers for the report.
-- Make sure that your batch script has the --exclusive flag when collecting execution times.
+- `omp_get_wtime()` [example](https://www.openmp.org/spec-html/5.0/openmpsu160.html)
+- Use the compiler flag `-g` while debugging but `-O2` when collecting performance numbers for the report.
+- Make sure that your batch script has the `--exclusive` flag when collecting execution times.
 
 ## Grading
 
@@ -134,8 +134,8 @@ The project will be graded as follows:
 
 | Component | Percentage |
 | --------- | ---------- |
-| Problem 1 Runs correctly on 4 and 16 threads | 10 + 10 |
-| Problem 2 Runs correctly on 4 and 16 threads | 10 + 10 |
-| Problem 3 Runs correctly on 4 and 16 threads | 10 + 10 |
-| Problem 4 Runs correctly on 4 and 16 threads | 15 + 15 |
+| Problem 1 runs correctly on 4 and 16 threads | 10 + 10 |
+| Problem 2 runs correctly on 4 and 16 threads | 10 + 10 |
+| Problem 3 runs correctly on 4 and 16 threads | 10 + 10 |
+| Problem 4 runs correctly on 4 and 16 threads | 15 + 15 |
 | Writeup | 10 |
