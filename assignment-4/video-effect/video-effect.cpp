@@ -4,6 +4,7 @@
     CUDA kernels will be launched with block size blockDimSize by blockDimSize. */
 constexpr int blockDimSize = 8;
 
+#ifndef DEBUG
 /*  your job is to write convolveGPU:
     convolveGPU will be called with blockSize blockDimSize x blockDimSize 
     and gridsize ⌈height/blockDimSize⌉x⌈width/blockDimSize⌉.
@@ -13,6 +14,9 @@ constexpr int blockDimSize = 8;
 __global__ void convolveGPU(float const* in, float *out, int width, int height, float const* kernel, int kernelWidth, int kernelHeight) {
     /* your code here */
 }
+
+#else
+  using cudaStream_t = void *;
 
 /* A CPU example of the convolve kernel */
 void convolveCPU(float const* in, float *out, int width, int height, float const* kernel, int kernelWidth, int kernelHeight) {
@@ -47,10 +51,18 @@ void convolveCPU(float const* in, float *out, int width, int height, float const
         }
     }
 }
+#endif
 
 /* call the convolveGPU function on each frame */
 float convolveFrames(std::vector<float *> const& framesIn, std::vector<float *> &framesOut, int width, int height, float const* kernel, int kernelWidth, int kernelHeight,
     cudaStream_t *streams, int numStreams, int gridSizeX, int gridSizeY) {
+
+#ifdef DEBUG
+    float elapsed = 0;
+    for (int i = 0; i < framesIn.size(); i += 1) {
+        convolveCPU(framesIn.at(i), framesOut.at(i), width, height, kernel, kernelWidth, kernelHeight);
+    }
+#else
 
     cudaEvent_t start, stop;
     cudaEventCreate(&start);
@@ -71,5 +83,6 @@ float convolveFrames(std::vector<float *> const& framesIn, std::vector<float *> 
     cudaEventElapsedTime(&elapsed, start, stop);
     cudaEventDestroy(start);
     cudaEventDestroy(stop);
+#endif
     return (elapsed / 1000.0f);
 }
