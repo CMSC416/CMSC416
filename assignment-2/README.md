@@ -2,9 +2,10 @@
 
 The purpose of this programming assignment is to gain experience in parallel
 programming on a cluster and MPI. For this assignment, you have to write a
-parallel implementation of a program to simulate the [Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
+parallel implementation of a program to simulate the [Game of
+Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
 
-## Serial Algorithm 1
+## Serial Algorithm
 
 The game of life simulates simple cellular automata. The game is played on a
 rectangular board containing cells. At the start, some of the cells are
@@ -18,20 +19,24 @@ the previous one are:
 
 For this assignment, the game board has finite size. The x-axis starts at 0 and
 ends at X_limit-1 (supplied on the command line). Likewise, the y-axis start at
-0 and ends at Y_limit-1 (supplied on the command line). We assume **no wraparound** for the edges and corners.
+0 and ends at Y_limit-1 (supplied on the command line). We assume **no
+wraparound** for the edges and corners.
 
-You can use the provided [serial code](https://github.com/CMSC416/CMSC416/blob/main/assignment-2/serial.cpp) as a baseline to develop your parallel implementation. It provides
-some basic functionality such as parsing the input file and exporting the final
-board state to a CSV file. Your task is to implement the parallel version using
-C, C++, or Fortran, and MPI. You can adapt this [Makefile](Makefile) and [batch script](submit.sh) for your needs.
+You can use the provided [serial code](serial.cpp) as a baseline to develop
+your parallel implementation. It provides some basic functionality such as
+parsing the input file and exporting the final board state to a CSV file. Your
+task is to implement the parallel version using C, C++, or Fortran, and MPI.
+You can adapt this [Makefile](Makefile) and [batch script](submit.sh) for your
+needs.
 
 ## Input/Initialization
 
-Your program should read in a data file containing the coordinates of
-cells that are initially alive. Sample files are located here: [life.1.256x256.data](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign2/data/life.1.256x256.data) and
-[life.2.256x256.data](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign2/data/life.2.256x256.data)
-(256x256 board). Each line in this file represents the coordinates of a cell on
-the board that is live. For instance, the following entry:
+Your program should read in a data file containing the coordinates of cells
+that are initially alive. Sample files are located here:
+[life.1.256x256.data](data/life.1.256x256.data) and
+[life.2.256x256.data](data/life.2.256x256.data) (256x256 board). Each line in
+this file represents the coordinates of a cell on the board that is live. For
+instance, the following entry:
 
 ```
 1,3
@@ -68,14 +73,16 @@ coordinate) for each occupied cell at the end of the last generation/iteration.
 
 Sample output files are available:
 
-- [life.1.256x256.100.csv](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign2/data/life.1.256x256.100.csv) is the output of the file [life.1.256x256.data](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign2/data/life.1.256x256.data) run for 100 generations on a 256x256 board
-- [life.2.256x256.100.csv](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign2/data/life.2.256x256.100.csv) is the output of the file [life.2.256x256.data](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign2/data/life.2.256x256.data) run for 100 generations on a 256x256 board
+- [life.1.256x256.100.csv](data/life.1.256x256.100.csv) is the output of the file [life.1.256x256.data](data/life.1.256x256.data) run for 100 generations on a 256x256 board
+- [life.2.256x256.100.csv](data/life.2.256x256.100.csv) is the output of the file [life.2.256x256.data](data/life.2.256x256.data) run for 100 generations on a 256x256 board
 
 Similar to the output files above, your output in the file should be sorted by
 the X and Y coordinates.
 
 If you want to try bigger boards to study if you can get better speedups with
-more processes, you can use these: [life.512x512.data](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign2/data/life.512x512.data), [life.1024x1024.data](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign2/data/life.1024x1024.data). You can generate their correct outputs by using the serial code.
+more processes, you can use these: [life.512x512.data](data/life.512x512.data),
+[life.1024x1024.data](data/life.1024x1024.data). You can generate their correct
+outputs by using the serial code.
 
 The only print from your program to standard output should be from process 0
 that looks like this:
@@ -86,8 +93,8 @@ TIME: Min: 25.389 s Avg: 27.452 s Max: 41.672 s
 
 where Min, Avg and Max time (in seconds) are calculated using MPI reduction
 operations over the individual time measurements of the "main" loop (sum of all
-generations) on different processes for the sample [life.512x512.data](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign2/data/life.512x512.data) input
-file.
+generations) on different processes for the sample
+[life.512x512.data](data/life.512x512.data) input file.
 
 > Make sure that your timing prints look exactly as written above. You can use the following code snippets from serial.cpp for this:
 >
@@ -100,7 +107,7 @@ file.
 
 ## Parallel Version
 
-<img src="https://www.cs.umd.edu/class/fall2026/cmsc416/images/game-of-life.png" alt="game-of-life" align="right" width="300">
+<img src="game-of-life.png" alt="game-of-life" align="right" width="300">
 
 Figure out how you will decompose the problem for parallel execution. Remember
 that MPI (at least the OpenMPI implementation) does not always have great
