@@ -1,7 +1,5 @@
 # Assignment 2: MPI
 
-**Due: October 21, 2025 @ 11:59 PM Eastern Time**
-
 The purpose of this programming assignment is to gain experience in parallel
 programming on a cluster and MPI. For this assignment, you have to write a
 parallel implementation of a program to simulate the [Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
