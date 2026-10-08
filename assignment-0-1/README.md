@@ -53,8 +53,7 @@ tar -cvzf <tarname>.tar.gz <dirname>
 ```
 
 The tar command can be executed on zaratan, you can then scp the tarball to
-your laptop, and then upload the tarball to
-[gradescope](https://www.gradescope.com/courses/1367315).
+your laptop, and then upload the tarball to gradescope.
 
 > Important things to check before submitting:
 >

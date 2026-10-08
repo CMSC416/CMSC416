@@ -130,9 +130,9 @@ You must submit the following files and no other files:
 - `life-nonblocking.[c,cpp,f77,f90]`: parallel version using non-blocking Isend/Irecv routines, where the file extension depends on the language used for the implementation
 - `Makefile` that will compile your code successfully on
 zaratan when using `mpicc` or `mpicxx`, and generate this executable: `life-nonblocking`.
-- You must also submit a short PDF report (called `report-assign2.pdf`) with performance
+- You must also submit a <=2-page PDF report (called `report-assign2.pdf`) with performance
 results (a line plot). The line plot should present the execution times to run
-the parallel code on the input file [life.512x512.data](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign2/data/life.512x512.data) (for
+the parallel code on the input file [life.512x512.data](data/life.512x512.data) (for
 4, 8, 16, 32, 64, and 128 processes), running on a 512x512 board for 500 iterations.
 In total, you will be running the program 6 times.
 In the report, you should mention:
@@ -141,7 +141,7 @@ In the report, you should mention:
 
 You should put the code, Makefile and report in a single directory (named
 `LastName-FirstName-assign2`), compress it to .tar.gz
-(`LastName-FirstName-assign2.tar.gz`) and upload that to [gradescope](https://www.gradescope.com/courses/1367315).
+(`LastName-FirstName-assign2.tar.gz`) and upload that to gradescope.
 
 > Important things to check before submitting:
 >
@@ -162,9 +162,9 @@ The project will be graded as follows:
 | Component | Percentage |
 | --------- | ---------- |
 | Runs correctly with 4 processes | 30 |
-| Runs correctly with 16 processes | 40 |
-| Performance with 4 processes | 10 |
-| Performance with 16 processes | 10 |
+| Runs correctly with 16 processes | 30 |
+| Performance with 4 processes | 15 |
+| Performance with 16 processes | 15 |
 | Writeup | 10 |
 
 > NOTE: If your program does not compile when submitted on gradescope, you get 0 points. If your program does not run correctly, you do NOT get any points for performance/speedup.

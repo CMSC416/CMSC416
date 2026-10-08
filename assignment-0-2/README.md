@@ -45,8 +45,7 @@ below before using `tar`):
 
 You should put the code, Makefile and output files in a single directory (named
 `LastName-FirstName-assign0.2`), compress it to .tar.gz
-(`LastName-FirstName-assign0.2.tar.gz`) and upload that to
-[gradescope](https://www.gradescope.com/courses/1367315).
+(`LastName-FirstName-assign0.2.tar.gz`) and upload that to gradescope.
 
 > Important things to check before submitting:
 >
