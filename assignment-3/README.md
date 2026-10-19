@@ -17,7 +17,7 @@ You can get LULESH by cloning its [git repository](https://github.com/LLNL/LULES
 git clone https://github.com/LLNL/LULESH.git
 ```
 
-For this assignment, we will use an older version of gcc (9.4.0) and openmpi. You can get this by doing: `module load openmpi/gcc/9.4.0`. If you get an error, unload `openmpi/gcc/11.3.0` that you might have loaded for Assignment 2.
+For this assignment, we will use an older version of gcc (9.4.0) and openmpi. You can get this by doing: `module load openmpi/gcc/9.4.0`. If you get an error, unload `openmpi/gcc/11.3.0` and `gcc/11.3.0` that you might have loaded for Assignment 2.
 
 You can use CMake to build LULESH on zaratan by following these steps:
 
@@ -64,7 +64,7 @@ You can use hpcviewer or [Hatchet](https://hatchet.readthedocs.io/en/latest/) wi
 
 ### Installing Hatchet
 
-You can install hatchet on zaratan or your local computer using pip (after loading the module for Python 3.10):
+You can install hatchet on zaratan or your local computer using pip (after loading the module for Python 3.10). You may need to unload `openmpi/gcc/9.4.0` first.
 
 ```bash
 module load python/3.10.10/gcc
