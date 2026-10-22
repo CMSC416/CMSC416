@@ -1,15 +1,17 @@
 # Assignment 3: Performance Tools
 
-**Due: October 28, 2025 @ 11:59 PM Eastern Time**
-
 The purpose of this programming assignment is to gain experience in using
-performance analysis tools for parallel programs. There are two parts to this assignment. In Part I, you will
-run an existing parallel code, [LULESH](https://computing.llnl.gov/projects/co-design/lulesh) and
-collect performance data using HPCToolkit. In Part II, you will use performance data (gathered using another tool called Caliper) provided to you, and analyze this data using Hatchet.
+performance analysis tools for parallel programs. There are two parts to
+this assignment. In Part I, you will run an existing parallel code,
+[LULESH](https://computing.llnl.gov/projects/co-design/lulesh) and collect
+performance data using HPCToolkit. In Part II, you will use performance data
+provided to you (gathered using another tool called Caliper), and analyze
+this data using Hatchet.
+
 
 ## Part I: Recording performance data
 
-### Downloading and building LULESH
+### Download and build LULESH
 
 You can get LULESH by cloning its [git repository](https://github.com/LLNL/LULESH) as follows:
 
@@ -30,9 +32,9 @@ make
 
 This should produce an executable `lulesh2.0` in the build directory.
 
-### Running LULESH
+### Run LULESH
 
-Lets say you want to run LULESH on 8 processes for 10 iterations/timesteps. This would be the mpirun line:
+Lets say you want to run LULESH on 8 processes for 10 iterations (timesteps). This would be the mpirun line:
 
 ```bash
 mpirun -np 8 ./lulesh2.0 -i 10 -p
@@ -40,19 +42,19 @@ mpirun -np 8 ./lulesh2.0 -i 10 -p
 
 > Reminder: login nodes are for code development and compilation only. Any runs including launching your parallel program using mpirun should be done in a batch job or interactive job.
 
-### Using HPCToolkit
+### Use HPCToolkit to gather performance data
 
-[HPCToolkit](http://www.hpctoolkit.org/manual/HPCToolkit-users-manual.pdf) can be loaded on zaratan via the `hpctoolkit/gcc/9.4.0` module. You can use HPCtoolkit to collect profiling data for a parallel program in three steps.
+[HPCToolkit](http://www.hpctoolkit.org/manual/HPCToolkit-users-manual.pdf) can be loaded on zaratan via the `hpctoolkit/gcc/9.4.0` module. You can use HPCtoolkit to collect profiling data for any parallel program in three steps.
 
-1. Step I: Running the code (LULESH) with hpcrun (**in a batch job**):
+1. Step I: Run the code (LULESH) with hpcrun (**in a batch job**):
 
    `mpirun -np <num_ranks> hpcrun ./exe <args>`
 
    This will generate a measurements directory.
-2. Step II: First post-processing step on the measurements directory (this can be run on the login node)
+2. Step II: First step of post-processing on the measurements directory (this can be run on the login node):
 
    `hpcstruct <measurements_directory>`
-3. Step III: Second post-processing step on the measurements directory (this can be run on the login node)
+3. Step III: Second step of post-processing on the measurements directory (this can be run on the login node)
 
    `hpcprof <measurements-directory>`
 
@@ -62,9 +64,9 @@ You can use hpcviewer or [Hatchet](https://hatchet.readthedocs.io/en/latest/) wi
 
 ## Part II: Analyzing performance data using Hatchet
 
-### Installing Hatchet
+### Instalg Hatchet
 
-You can install hatchet on zaratan or your local computer using pip (after loading the module for Python 3.10). You may need to unload `openmpi/gcc/9.4.0` first.
+You can install hatchet on zaratan or your local computer using pip (after loading the module for Python 3.10). You may need to unload `openmpi/gcc/9.4.0` on zaratan first.
 
 ```bash
 module load python/3.10.10/gcc
@@ -73,7 +75,9 @@ pip install hatchet
 
 The above command should successfully install hatchet, provided that it runs without any errors. On zaratan, you may have to add `--user` to the pip command.
 
-In case this does not work OR you want to install from source, then you can do so by following the steps below. First clone the hatchet git repository and add the path of the directory where you cloned hatchet to your `PYTHONPATH`:
+In case this does not work OR you want to install from source, you can do so
+by following the steps below. First clone the hatchet git repository and add
+the path of the directory where you cloned hatchet to your `PYTHONPATH`:
 
 ```bash
 git clone https://github.com/hatchet/hatchet
@@ -92,7 +96,7 @@ source install.sh
 
 ### Datasets
 
-You can find four datasets from four different runs of LULESH at: [lulesh-1core.json](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign3/lulesh-1core.json) [lulesh-8cores.json](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign3/lulesh-8cores.json) [lulesh-27cores.json](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign3/lulesh-27cores.json) [lulesh-64cores.json](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign3/lulesh-64cores.json). These were gathered by running LULESH with 1, 8, 27, and 64 processes respectively. These profiles were gathered using Caliper, hence you can use `from_caliper` in the hatchet API to read them. You will use these profiles/datasets for all the tasks below.
+You will find four datasets from four different runs of LULESH at: [lulesh-1core.json](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign3/lulesh-1core.json) [lulesh-8cores.json](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign3/lulesh-8cores.json) [lulesh-27cores.json](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign3/lulesh-27cores.json) [lulesh-64cores.json](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign3/lulesh-64cores.json). These were gathered by running LULESH with 1, 8, 27, and 64 processes respectively. These profiles were gathered using Caliper, hence you can use `from_caliper` in the hatchet API to read them. You will use these profiles/datasets for all the tasks below.
 
 ### Analysis Tasks
 
