@@ -96,15 +96,23 @@ source install.sh
 
 ### Datasets
 
-You will find four datasets from four different runs of LULESH at: [lulesh-1core.json](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign3/lulesh-1core.json) [lulesh-8cores.json](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign3/lulesh-8cores.json) [lulesh-27cores.json](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign3/lulesh-27cores.json) [lulesh-64cores.json](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign3/lulesh-64cores.json). These were gathered by running LULESH with 1, 8, 27, and 64 processes respectively. These profiles were gathered using Caliper, hence you can use `from_caliper` in the hatchet API to read them. You will use these profiles/datasets for all the tasks below.
+You will find four datasets from four different runs of LULESH at:
+[lulesh-1core.json](data/lulesh-1core.json),
+[lulesh-8cores.json](data/lulesh-8cores.json),
+[lulesh-27cores.json](data/lulesh-27cores.json), and
+[lulesh-64cores.json](data/lulesh-64cores.json). These were gathered by
+running LULESH with 1, 8, 27, and 64 processes respectively. These profiles
+were gathered using Caliper, hence you can use `from_caliper` in the hatchet
+API to read them. You will use these profiles/datasets for all the tasks
+below.
 
 ### Analysis Tasks
 
 > - For each of these tasks below, you should work with the assumption that the data files above are in the same current working directory as your Python scripts.
-> - The datasets have multiples nodes in the tree that represent calls to the same MPI routines such as MPI_Recv, MPI_Wait etc. The answers will be different if you first merge such nodes (using a groupby_aggregate operation) versus if you do not. We do NOT want you to use groupby in any of the problems.
+> - The datasets have multiples nodes in the tree that represent calls to the same MPI routines such as `MPI_Recv`, `MPI_Wait` etc. The answers will be different if you first merge such nodes (using a `groupby_aggregate` operation) versus if you do not. We do NOT want you to use groupby in any of the problems.
 > - When printing the function name and time, only print the name and time as shown below with a space in between. Do NOT print the index column in the dataframe. The output below is just an example, not the actual output.
 
-1. Problem 1: Analyze lulesh-1core.json and identify the top N
+1. Problem 1: Analyze `lulesh-1core.json` and identify the top N
 functions where the code spends the largest amounts of (exclusive) time. You
 should set the value of N in your Python program from the first command line
 argument to your script. The only output from the Python script should be N
@@ -123,7 +131,7 @@ correctness (an example):
    ```
 
 2. Problem 2: Use the `load_imbalance()` function on
-the lulesh-64cores.json dataset, and given a command line parameter, X (value of X≥1),
+the `lulesh-64cores.json` dataset, and given a command line parameter, X (value of X≥1),
 identify the function that is X from the top (top starts at 1 and not 0) if the functions are sorted in
 decreasing order of the imbalance. You should set the value of X in your Python
 program from the first command line argument to your script. The only output
