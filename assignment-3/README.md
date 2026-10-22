@@ -40,7 +40,8 @@ Lets say you want to run LULESH on 8 processes for 10 iterations (timesteps). Th
 mpirun -np 8 ./lulesh2.0 -i 10 -p
 ```
 
-> Reminder: login nodes are for code development and compilation only. Any runs including launching your parallel program using mpirun should be done in a batch job or interactive job.
+> [!CAUTION]
+> Login nodes are for code development and compilation only. Any runs including launching your parallel program using mpirun should be done in a batch job or interactive job.
 
 ### Use HPCToolkit to gather performance data
 
@@ -108,6 +109,7 @@ below.
 
 ### Analysis Tasks
 
+> [!NOTE]
 > - For each of these tasks below, you should work with the assumption that the data files above are in the same current working directory as your Python scripts.
 > - The datasets have multiples nodes in the tree that represent calls to the same MPI routines such as `MPI_Recv`, `MPI_Wait` etc. The answers will be different if you first merge such nodes (using a `groupby_aggregate` operation) versus if you do not. We do NOT want you to use groupby in any of the problems.
 > - When printing the function name and time, only print the name and time as shown below with a space in between. Do NOT print the index column in the dataframe. The output below is just an example, not the actual output.
@@ -169,6 +171,7 @@ correctness (an example):
    func4_name 0.374
    ```
 
+> [!WARNING]
 > - Don't follow the build and running instructions in this assignment blindly. The goal is for you to learn to compile and run parallel code, and learn how to use HPCToolkit and Hatchet.
 > - If you use the filter function in hatchet, add this argument to it: num_procs=1.
 
@@ -183,6 +186,7 @@ You must submit the following files and no other files:
 You should put the dataset, 3 Python scripts, and report in a single directory (named `LastName-FirstName-assign3`), compress it to .tar.gz (`LastName-FirstName-assign3.tar.gz`) and upload that to [gradescope](https://www.gradescope.com/courses/1367315).
 Replace `LastName` and `FirstName` with your last and first name, respectively.
 
+> [!CAUTION]
 > - We will not accept .ipynb files -- if you use a Python notebook, you should export to .py files, make sure they work correctly in a terminal and then submit the .py files
 > - Do not submit the dataset files in the tarball
 
