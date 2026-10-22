@@ -7,7 +7,9 @@ tarballs to gradescope. You will find this [MIT
 course](https://missing.csail.mit.edu) and [command line
 reference](https://www.cs.umd.edu/~mmarsh/books/cmdline/cmdline.html) useful.
 
-> Reminder: login nodes are for code development and compilation only. Any runs
+
+> [!CAUTION]
+> Login nodes are for code development and compilation only. Any runs
 > including launching your parallel program should be done in a batch job or
 > interactive job.
 
@@ -55,7 +57,8 @@ tar -cvzf <tarname>.tar.gz <dirname>
 The tar command can be executed on zaratan, you can then scp the tarball to
 your laptop, and then upload the tarball to gradescope.
 
-> Important things to check before submitting:
+> [!IMPORTANT]
+> Things to check before submitting:
 >
 > - Remove unnecessary files (the executable, slurm-\*.out files, etc.) before creating the tarball.
 > - When issuing the `tar` command, the current working directory (cwd) should be the parent directory of `LastName-FirstName-assign0.1`.

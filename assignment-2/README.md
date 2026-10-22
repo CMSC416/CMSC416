@@ -61,7 +61,8 @@ The number of processes used to launch the program is specified as part of the
 mpirun -np <# of processes> ./life <data-file-name> <# of generations> <X_limit> <Y_limit>
 ```
 
-> Reminder: login nodes are for code development and compilation only. Any runs including launching your parallel program using mpirun should be done in a batch job or interactive job.
+> [!CAUTION]
+> Login nodes are for code development and compilation only. Any runs including launching your parallel program using mpirun should be done in a batch job or interactive job.
 
 ## Output
 
@@ -96,6 +97,7 @@ operations over the individual time measurements of the "main" loop (sum of all
 generations) on different processes for the sample
 [life.512x512.data](data/life.512x512.data) input file.
 
+> [!IMPORTANT]
 > Make sure that your timing prints look exactly as written above. You can use the following code snippets from serial.cpp for this:
 >
 > ```cpp
@@ -120,6 +122,7 @@ You can assume that X_limit and Y_limit will be powers of 2 as will be the numbe
 
 When you need to distribute the initial state of the board to different processes, you can read the entire file on one process (say rank 0) and then send messages from rank 0 to everyone else.
 
+> [!CAUTION]
 > - Keeping a copy of the entire board on each process and/or using collectives to send ghost rows between processes is the WRONG method for parallelizing this problem.
 > - If the data you are trying to send is not contiguous in memory, you need to first copy it to a contiguous buffer and then point to that buffer in the MPI_Isend call. Similar considerations for MPI_Irecv.
 
@@ -143,7 +146,8 @@ You should put the code, Makefile and report in a single directory (named
 `LastName-FirstName-assign2`), compress it to .tar.gz
 (`LastName-FirstName-assign2.tar.gz`) and upload that to gradescope.
 
-> Important things to check before submitting:
+> [!IMPORTANT]
+> Things to check before submitting:
 >
 > - Make sure that the generated executable name is life-nonblocking, and do not include the executable in the tarball.
 > - Use MPI_Wtime to time the code and MPI reduction to compute min, max, and avg runtime. Only time the main compute loop (not including the time for distributing the input board, gathering the final state, etc).
@@ -167,7 +171,8 @@ The project will be graded as follows:
 | Performance with 16 processes | 15 |
 | Writeup | 10 |
 
-> NOTE: If your program does not compile when submitted on gradescope, you get 0 points. If your program does not run correctly, you do NOT get any points for performance/speedup.
+> [!WARNING]
+> If your program does not compile when submitted on gradescope, you get 0 points. If your program does not run correctly, you do NOT get any points for performance/speedup.
 >
 > We will compare your performance numbers with our parallel solution as the baseline.
 > You will get full points as long as your performance is within 2 times (2x) of the

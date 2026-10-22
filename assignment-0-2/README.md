@@ -5,7 +5,8 @@ example MPI program on zaratan.  You will find this [MIT
 course](https://missing.csail.mit.edu) and [command line
 reference](https://www.cs.umd.edu/~mmarsh/books/cmdline/cmdline.html) useful.
 
-> Reminder: login nodes are for code development and compilation only. Any runs
+> [!CAUTION]
+> Login nodes are for code development and compilation only. Any runs
 > including launching your parallel program should be done in a batch job or
 > interactive job.
 
@@ -47,7 +48,8 @@ You should put the code, Makefile and output files in a single directory (named
 `LastName-FirstName-assign0.2`), compress it to .tar.gz
 (`LastName-FirstName-assign0.2.tar.gz`) and upload that to gradescope.
 
-> Important things to check before submitting:
+> [!IMPORTANT]
+> Things to check before submitting:
 >
 > - Remove unnecessary files (the executable, slurm-\*.out files, etc.) before creating the tarball.
 > - When issuing the `tar` command, the current working directory (cwd) should be the parent directory of `LastName-FirstName-assign0.2`.

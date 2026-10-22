@@ -39,7 +39,8 @@ always.
 
 A sample batch script can be found [here](submit.sh).
 
-> Reminder: login nodes are for code development and compilation only. Any runs
+> [!CAUTION]
+> Login nodes are for code development and compilation only. Any runs
 > including executing/running your OpenMP programs should be done in a batch
 > job or interactive job.
 
@@ -115,7 +116,8 @@ You should put the code files, Makefile and report in a single directory (named
 (`LastName-FirstName-assign1.tar.gz`) and upload that to
 gradescope.
 
-> NOTE: Do not add any additional prints in your program. The timing prints
+> [!WARNING]
+> Do not add any additional prints in your program. The timing prints
 > should be used for studying performance but commented out before submitting
 > your code.
 
