@@ -9,15 +9,16 @@ The [2D Stencil](#2d-stencil-cmsc616) problem is for CMSC616 students.
 
 ### Serial Algorithm
 
-In this version of the assignment, you will implement convolutions with image kernels on a video file.
-Image kernels are used for blurring, edge detection, and other effects.
-An image kernel is a square matrix which is applied to each pixel in an image.
-It is applied by setting the pixel to the dot product of its neighbors and the image kernel.
-[Wikipedia](https://en.wikipedia.org/wiki/Kernel_(image_processing)) and
-[this visualization](https://setosa.io/ev/image-kernels/)
-contain further reading.
+In this version of the assignment, you will implement convolutions with image
+kernels on a video file.  Image kernels are used for blurring, edge detection,
+and other effects.  An image kernel is a square matrix which is applied to
+each pixel in an image.  It is applied by setting the pixel to the dot product
+of its neighbors and the image kernel.
+[Wikipedia](https://en.wikipedia.org/wiki/Kernel_(image_processing)) and [this
+visualization](https://setosa.io/ev/image-kernels/) contain further reading.
 
-For example, if *k* is a 3x3 kernel, then pixel *i*, *j* of *img* would be computed as
+For example, if `k` is a 3x3 kernel, then pixel `i`, `j` of `img` would be
+computed as
 
 ```
 new_img[i][j] = img[i-1][j-1]*k[0][0] + img[i-1][j]*k[0][1] + img[i-1][j+1]*k[0][2] +
@@ -25,19 +26,20 @@ new_img[i][j] = img[i-1][j-1]*k[0][0] + img[i-1][j]*k[0][1] + img[i-1][j+1]*k[0]
                 img[i+1][j-1]*k[2][0] + img[i+1][j]*k[2][1] + img[i+1][j+1]*k[2][2]
 ```
 
-The same pattern can be extended for kernels of size 5x5, 7x7, ...
-In this assignment you will apply a kernel to each pixel of each frame in a video.
-The pixels are in BGR format. You should convolve each color channel independently.
-Additionally, border pixels will be ignored.
+The same pattern can be extended for kernels of size 5x5, 7x7, etc.  In this
+assignment, you will apply a kernel to each pixel of each frame in a video.
+The pixels are in BGR format. You should convolve each color channel
+independently.  Additionally, border pixels will be ignored.
 
 ### GPU Algorithm
 
-Your task is to implement this procedure on the GPU.
-We have provided [starter code](video-effect) to handle reading/writing the video file (driver.cpp) and moving data on/off the GPU
-(video-effect.cu).
-You need to implement the *convolveGPU* kernel in *video-effect.cu*.
-A serial implementation of this algorithm is provided in the *convolveCPU* function.
-*driver.cpp* contains code to read/write the video and does not need to be edited.
+Your task is to implement this procedure on the GPU.  We have provided
+[starter code](video-effect) to handle reading/writing the video file
+(`driver.cpp`) and moving data on/off the GPU (`video-effect.cu`).  You need to
+implement the `convolveGPU` kernel in `video-effect.cu`.  A serial
+implementation of this algorithm is provided in the `convolveCPU` function.
+`driver.cpp` contains code to read/write the video and does not need to be
+edited.
 
 The GPU kernel is structured as follows:
 
@@ -47,33 +49,36 @@ __global__ void convolveGPU(float const* in, float *out, int width, int height, 
 }
 ```
 
-*in* is the video frame you are convolving. *out* is the frame you are storing results into.
-The frames are in packed BGR format (see the *convolveCPU* example for how to read each color channel).
-*width* and *height* give the dimensions of the video frame.
-*kernel*, *kernelWidth*, and *kernelHeight* provide the image kernel.
-You can assume the kernel is square with an odd dimension >= 3.
+`in` is the video frame you are convolving. `out` is the frame you are storing
+results into.  The frames are in packed BGR format (see the `convolveCPU`
+example for how to read each color channel).  `width` and `height` give the
+dimensions of the video frame.  `kernel`, `kernelWidth`, and `kernelHeight`
+provide the image kernel.  You can assume the kernel is square with an odd
+dimension >= 3.
 
-*convolveGPU* will be called with block size 8x8.
-You can change the block size with the *blockDimSize* variable.
-Your kernel should be able to handle when there are more pixels than threads available on the GPU (i.e. you need to implement striding).
+`convolveGPU` will be called with block size 8x8.  You can change the block
+size with the `blockDimSize` variable.  Your kernel should be able to handle
+when there are more pixels than threads available on the GPU (i.e. you need to
+implement striding).
 
 ### Running
 
-The starter code is setup to take an input video file name, output file name, and kernel name.
-The available kernel names are blur, edge, sharpen, and identity.
-You can also provide an optional frame number which will be dumped into a csv file.
-Dumped frames can be used to check for correctness.
+The starter code is setup to take an input video file name, output file name,
+and kernel name. The available kernel names are blur, edge, sharpen, and
+identity. You can also provide an optional frame number which will be output
+(dumped) into a csv file. Dumped frames can be used to check for correctness.
 The command line arguments are:
 
 ```bash
 ./video-effect <input_filename> <output_filename> <kernel_name> <gridSizeX> <gridSizeY> <optional:frame_number> <optional:frame_filename>
 ```
 
-You can check your output for [this video](https://pixabay.com/videos/forest-trees-woods-mountain-nature-89420/)
-(download the 1920x1080 version). We provide the output for frame 100
-with the edge kernel [here](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign4/forest-edge-100.csv).
+You can check your output for [this
+video](https://pixabay.com/videos/forest-trees-woods-mountain-nature-89420/)
+(download the 1920x1080 version). We provide the output for frame 100 with the
+edge kernel [here](video-effect/data/forest-edge-100.csv).
 
-To get a GPU in your sbatch job add the following setting to the top
+To get a GPU in your sbatch job, add the following setting to the top
 
 ```bash
 #SBATCH --gres=gpu:a100_1g.5gb
@@ -81,17 +86,20 @@ To get a GPU in your sbatch job add the following setting to the top
 
 A sample sbatch script can be found [here](video-effect/submit.sh).
 
-If you use interactive jobs, then add the `--gres=gpu:a100_1g.5gb` argument when you run salloc.
-For this code, you need to load cuda and opencv with `module load cuda opencv`.
+If you use interactive jobs, thn add the `--gres=gpu:a100_1g.5gb` argument
+when you run `salloc`.  For this code, you need to load cuda and opencv with
+`module load cuda opencv`.
 
 ### Output
 
-The program will write out a video file with *_out* appended to the base filename.
-For instance `./video-effect video.mp4 blur` will write out *video_out.mp4* with the blur effect.
-You can copy videos off of zaratan to view them.
+The program will write out a video file with `_out` appended to the base
+filename.  For instance `./video-effect video.mp4 blur` will write out
+`video_out.mp4` with the blur effect.  You can copy videos off of zaratan to
+view them.
 
-Running *./video-effect video.mp4 edge 100 frame.csv* will write the 100th frame into *frame.csv*.
-Your output should match [forest-edge-100.csv](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign4/forest-edge-100.csv).
+Running `./video-effect video.mp4 edge 100 frame.csv` will write the 100th
+frame into `frame.csv`.  Your output should match
+[forest-edge-100.csv](video-effect/data/forest-edge-100.csv).
 
 The program will output to stdout:
 
@@ -104,12 +112,12 @@ Frames processed per second: 80.039 frames/s
 
 You must submit the following files and no other files:
 
-- `video-effect.cu`: file with *convolveGPU* implemented
+- `video-effect.cu`: file with `convolveGPU` implemented
 - `driver.cpp`: file with changes to the command line arguments implemented
 - `Makefile` that will compile your code successfully on zaratan when using nvcc. A Makefile is provided [here](video-effect/Makefile). Make sure that the executable name is video-effect, and do not include the executables in the tarball.
 - You must also submit a short report (`LastName-FirstName-report.pdf`) with performance results (one line plot).
-  The line plots should present the execution times to run the GPU version respectively on the input file video.mp4 (for different block sizes).
-  You can change the block size by changing the *blockDimSize* variable.
+  The line plots should present the execution times to run the GPU version respectively on the input file `video.mp4` (for different block sizes).
+  You can change the block size by changing the `blockDimSize` variable.
   In the report, you should mention:
   - how you wrote the kernel
   - how was the initial data distribution done
@@ -128,13 +136,14 @@ The project will be graded as follows:
 
 | Component | Percentage |
 | --------- | ---------- |
-| Runs correctly with the identity kernel | 15 |
-| Runs correctly with other three kernels | 75 (25% each kernel) |
+| Runs correctly with the identity kernel | 5 |
+| Runs correctly with other three kernels | 45 (15% each kernel) |
 | Writeup | 10 |
+| In-person assessment | 40 |
 
 ## 2D Stencil (CMSC616)
 
-<img src="https://www.cs.umd.edu/class/fall2026/cmsc416/images/assign4b-1.png" alt="jacobi2d" align="right" width="300">
+<img src="2dstencil.png" alt="2d-stencil" align="right" width="300">
 
 In this version of the assignment, you have to write a
 parallel implementation of an [iterative stencil computation](https://en.wikipedia.org/wiki/Iterative_Stencil_Loops).
