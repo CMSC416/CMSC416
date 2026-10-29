@@ -143,7 +143,7 @@ The project will be graded as follows:
 
 ## 2D Stencil (CMSC616)
 
-<img src="2dstencil.png" alt="2d-stencil" align="right" width="300">
+<img src="2d-stencil.png" alt="2d-stencil" align="right" width="300">
 
 In this version of the assignment, you have to write a parallel implementation
 of an [iterative stencil
