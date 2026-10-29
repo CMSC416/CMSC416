@@ -1,11 +1,8 @@
 # Assignment 4: CUDA
 
-**Due: November ~~12~~ 18, 2025 @ 11:59 PM Eastern Time**
-
-> If you are using the CMSC416 github repository to obtain the starter codes for each assignment, make sure you do a `git pull --force` before you start working on this assignment. We have made some changes to the starter code.
-
-The purpose of this programming assignment is to gain experience in writing GPU kernels.
-This assignment is split into two different problems. Applying [image effects to videos](#video-effects-cmsc416) is for CMSC416 students.
+The purpose of this programming assignment is to gain experience in writing
+GPU kernels.  This assignment is split into two different problems. Applying
+[image effects to videos](#video-effects-cmsc416) is for CMSC416 students.
 The [2D Stencil](#2d-stencil-cmsc616) problem is for CMSC616 students.
 
 ## Video Effects (CMSC416)
@@ -120,7 +117,7 @@ You must submit the following files and no other files:
 
 You should put the code, Makefile and report in a single directory (named
 `LastName-FirstName-assign4`), compress it to .tar.gz
-(`LastName-FirstName-assign4.tar.gz`) and upload that to [gradescope](https://www.gradescope.com/courses/1367315).
+(`LastName-FirstName-assign4.tar.gz`) and upload that to gradescope.
 
 Feel free to try different videos and image kernels.
 Keep in mind that some videos may drastically increase in file size if the kernel reduces the compression rate of the video data.
