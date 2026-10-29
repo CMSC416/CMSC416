@@ -145,53 +145,57 @@ The project will be graded as follows:
 
 <img src="2dstencil.png" alt="2d-stencil" align="right" width="300">
 
-In this version of the assignment, you have to write a
-parallel implementation of an [iterative stencil computation](https://en.wikipedia.org/wiki/Iterative_Stencil_Loops).
+In this version of the assignment, you have to write a parallel implementation
+of an [iterative stencil
+computation](https://en.wikipedia.org/wiki/Iterative_Stencil_Loops).
 
 We will use a two-dimensional (2D) Jacobi calculation to simulate heat
 diffusion. This calculation performs iterative sweeps (called timesteps) over
 a given array of values.
 
-The serial algorithm is described here and you have to implement its
-parallel version using CUDA.
+The serial algorithm is described here and you have to implement its parallel
+version using CUDA.
 
 ### Input/Initialization
 
-Your program should read in a file containing the values that will be used
-to initialize the 2D array of doubles. A sample file is available [here](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign4/512x512-input.csv). This
-sample input corresponds to the initial conditions in the figure on the right. Two
-regions of size 128x128 are assigned initial values of 212 and 32 degrees
-F respectively to denote hot and cold zones. All remaining array elements
-are assigned an initial temperature of 72 degrees F.
+Your program should read in a file containing the values that will be used to
+initialize the 2D array of doubles. A sample file is available
+[here](2d-stencil/data/512x512-input.csv). This sample input corresponds to
+the initial conditions in the figure on the right. Two regions of size 128x128
+are assigned initial values of 212 and 32 degrees F respectively to denote hot
+and cold zones. All remaining array elements are assigned an initial
+temperature of 72 degrees F.
 
 ### Serial Algorithm
 
-At each timestep, the value in each cell (array element) is updated by averaging the values of its four neighbors and itself.
+At each timestep, the value in each cell (array element) is updated by
+averaging the values of its four neighbors and itself.
 
 ```
 A[i, j] = (A[i, j] + A[i-1, j] + A[i+1, j] + A[i, j-1] + A[i, j+1]) * 0.2
 ```
 
-You can assume periodic boundary conditions so the array elements at the edges will exchange data with elements on the opposite edge.
+You can assume periodic boundary conditions so the array elements at the edges
+will exchange data with elements on the opposite edge.
 
-For this assignment, the 2D Stencil matrix/array has a finite size. The x-axis starts at 0 and
-ends at X_limit-1 (supplied on the command line). Likewise, the y-axis starts at
-0 and ends at Y_limit-1 (supplied on the command line).
+For this assignment, the 2D Stencil matrix/array has a finite size. The x-axis
+starts at 0 and ends at X_limit-1 (supplied on the command line). Likewise,
+the y-axis starts at 0 and ends at Y_limit-1 (supplied on the command line).
 
 ### GPU Algorithm
 
-You are provided with [starter code](2d-stencil/2d-stencil.cu) to handle reading/writing data from/to disk.
-Your job is to write two GPU kernels:
+You are provided with [starter code](2d-stencil/2d-stencil.cu) to handle
+reading/writing data from/to disk.  Your job is to write two GPU kernels:
 
-- *padded_matrix_copy*, which copies the current matrix/array into a previous_matrix (array)
-- *compute_on_gpu*, which computes a single iteration of the 2D stencil computation.
+- `padded_matrix_copy`, which copies the current matrix/array into a previous matrix (array)
+- `compute_on_gpu`, which computes a single iteration of the 2D stencil computation.
 
 and several CPU functions:
 
-- *allocate_grid_on_device*, which allocates the matrix on the device
-- *deallocate_grid_on_device*, which deallocates the matrix on the device
-- *copy_grid_to_device*, which copies the matrix from the host to device, and
-- *copy_grid_to_host*, which copies the matrix from the device to host
+- `allocate_grid_on_device`, which allocates the matrix on the device
+- `deallocate_grid_on_device`, which deallocates the matrix on the device
+- `copy_grid_to_device`, which copies the matrix from the host to device, and
+- `copy_grid_to_host`, which copies the matrix from the device to host
 
 The GPU kernels are structured as follows:
 
@@ -200,15 +204,21 @@ __global__ void padded_matrix_copy(double *dst, double *src, int X_limit, int Y_
 __global__ void compute_on_gpu(double *matrix, double *previous_matrix, int X_limit, int Y_limit)
 ```
 
-*matrix* is the board you are writing into, *previous_matrix* are the values of the matrix at the previous iteration, and *X_limit* & *Y_limit* are the size of the matrix.
-*padded_matrix_copy* and *compute_on_gpu* will be called with block size 8x8 and grid size provided on the command line.
-You can change the block size with the *blockDimSize* variable.
-Your kernel should be able to handle when there are more cells than threads available on the GPU (i.e. you need to implement striding). To check this, we will test your code with different values of grid size.
+`matrix` is the board you are writing into, `previous_matrix` are the values
+of the matrix at the previous iteration, and `X_limit` & `Y_limit` are the
+size of the matrix.  `padded_matrix_copy` and `compute_on_gpu` will be called
+with block size 8x8 and grid size provided on the command line.  You can
+change the block size with the `blockDimSize` variable.  Your kernel should be
+able to handle when there are more cells than threads available on the GPU
+(i.e. you need to implement striding). To check this, we will test your code
+with different values of grid size.
 
 ### Running
 
-Your program should take seven command line arguments: the name of the data file, the number of iterations or timesteps, the X and Y sizes of the 2D array, grid size along X and Y, and the output file.
-To be more specific, the command line of your program should be:
+Your program should take seven command line arguments: the name of the data
+file, the number of iterations or timesteps, the X and Y sizes of the 2D
+array, grid size along X and Y, and the output file.  To be more specific, the
+command line of your program should be:
 
 ```bash
 ./2d-stencil <input filename> <# of timesteps> <X_limit> <Y_limit> <gridSizeX> <gridSizeY> <output filename>
@@ -220,13 +230,14 @@ To request a GPU in your sbatch job script, add the following line to the top:
 #SBATCH --gres=gpu:a100_1g.5gb
 ```
 
-A sample sbatch script can be found [here](2d-stencil/submit.sh).
-If you use interactive jobs, then add the `--gres=gpu:a100_1g.5gb` argument when you run salloc.
+A sample sbatch script can be found [here](2d-stencil/submit.sh).  If you use
+interactive jobs, then add the `--gres=gpu:a100_1g.5gb` argument when you run
+salloc.
 
 ### Output
 
 Your program should write a single file called `<size_X>x<size_Y>-output.csv` (from one designated rank) that contains comma separated values (up to three decimal points) of the 2D array. Each line in the file should correspond to one row of the array starting with i=0, j=0.
-This is the correct [output file](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign4/512x512-output.csv) for the sample input file above after 100 timesteps.
+This is the correct [output file](2d-stencil/data/512x512-output.csv) for the sample input file above after 100 timesteps.
 
 The only print from your program to standard output should be the GPU timing (up to three decimal places)
 that looks like this:
@@ -237,18 +248,18 @@ TIME: 4.529 s
 
 Other sample inputs and outputs after 100 timesteps:
 
-- [Input 1](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign4/32x32-input.csv) [Output 1](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign4/32x32-output.csv) size_X = 32, size_Y = 32, timesteps = 100
-- [Input 2](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign4/64x128-input.csv) [Output 2](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign4/64x128-output.csv) size_X = 64, size_Y = 128, timesteps = 100
-- [Input 3](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign4/128x256-input.csv) [Output 3](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign4/128x256-output.csv) size_X = 128, size_Y = 256, timesteps = 100
+- [Input 1](2d-stencil/data/32x32-input.csv) [Output 1](2d-stencil/data/32x32-output.csv) size_X = 32, size_Y = 32, timesteps = 100
+- [Input 2](2d-stencil/data/64x128-input.csv) [Output 2](2d-stencil/data/64x128-output.csv) size_X = 64, size_Y = 128, timesteps = 100
+- [Input 3](2d-stencil/data/128x256-input.csv) [Output 3](2d-stencil/data/128x256-output.csv) size_X = 128, size_Y = 256, timesteps = 100
 
 ### What to Submit
 
 You must submit the following files and no other files:
 
-- `2d-stencil.cu`: starter code with the required CPU functions, and *padded_matrix_copy* and *compute_on_gpu* implemented.
+- `2d-stencil.cu`: starter code with the required CPU functions, and `padded_matrix_copy` and `compute_on_gpu` implemented.
 - `Makefile` that will compile your code successfully on zaratan when using nvcc. You can see a sample [Makefile here](2d-stencil/Makefile). Make sure that the executable name is 2d-stencil, and do not include the executables in the tarball.
 - You must also submit a short report (`LastName-FirstName-report.pdf`) with performance results (one line plot).
-  The line plot should present the execution times to run the GPU version on the input file [512x512-input.csv](https://www.cs.umd.edu/class/fall2025/cmsc416/assignments/assign4/512x512-input.csv) (for different block sizes).
+  The line plot should present the execution times to run the GPU version on the input file [512x512-input.csv](2d-stencil/data//512x512-input.csv) (for different block sizes).
   You can change the block size by changing the *blockDimSize* variable.
   In the report, you should mention:
   - how you wrote the kernel
@@ -257,7 +268,7 @@ You must submit the following files and no other files:
 
 You should put the code, Makefile and report in a single directory (named
 `LastName-FirstName-assign4`), compress it to .tar.gz
-(`LastName-FirstName-assign4.tar.gz`) and upload that to [gradescope](https://www.gradescope.com/courses/1367315).
+(`LastName-FirstName-assign4.tar.gz`) and upload that to gradescope.
 
 ### Grading
 
@@ -265,8 +276,9 @@ The project will be graded as follows:
 
 | Component | Percentage |
 | --------- | ---------- |
-| Runs correctly with 32x32 board | 25 |
-| Runs correctly with 64x128 board | 20 |
-| Runs correctly with 128x256 board | 20 |
-| Runs correctly with 512x512 board | 25 |
+| Runs correctly with 32x32 board | 10 |
+| Runs correctly with 64x128 board | 10 |
+| Runs correctly with 128x256 board | 10 |
+| Runs correctly with 512x512 board | 10 |
 | Writeup | 10 |
+| In-person assessment | 40 |
