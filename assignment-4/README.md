@@ -88,7 +88,7 @@ A sample sbatch script can be found [here](video-effect/submit.sh).
 
 If you use interactive jobs, thn add the `--gres=gpu:a100_1g.5gb` argument
 when you run `salloc`.  For this code, you need to load cuda and opencv with
-`module load cuda opencv`.
+`module load cuda/gcc/9.4.0 opencv`.
 
 ### Output
 
