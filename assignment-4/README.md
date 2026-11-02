@@ -97,7 +97,7 @@ filename.  For instance `./video-effect video.mp4 blur` will write out
 `video_out.mp4` with the blur effect.  You can copy videos off of zaratan to
 view them.
 
-Running `./video-effect video.mp4 edge 100 frame.csv` will write the 100th
+Running `./video-effect video.mp4 video-edge.mp4 edge 128 128 100 frame.csv` will write the 100th
 frame into `frame.csv`.  Your output should match
 [forest-edge-100.csv](video-effect/data/forest-edge-100.csv).
 
