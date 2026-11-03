@@ -58,7 +58,7 @@ dimension >= 3.
 
 `convolveGPU` will be called with block size 8x8.  You can change the block
 size with the `blockDimSize` variable.  Your kernel should be able to handle
-when there are more pixels than threads available on the GPU (i.e. you need to
+the case when there are more pixels than threads available on the GPU (i.e. you need to
 implement striding).
 
 ### Running
@@ -92,12 +92,11 @@ when you run `salloc`.  For this code, you need to load cuda and opencv with
 
 ### Output
 
-The program will write out a video file with `_out` appended to the base
-filename.  For instance `./video-effect video.mp4 blur` will write out
-`video_out.mp4` with the blur effect.  You can copy videos off of zaratan to
+The program will write out a video file using the output filename provided on the command line.
+You can copy videos off of zaratan to
 view them.
 
-Running `./video-effect video.mp4 video-edge.mp4 edge 128 128 100 frame.csv` will write the 100th
+Running `./video-effect video.mp4 video-out-edge.mp4 edge 128 128 100 frame.csv` will write the 100th
 frame into `frame.csv`.  Your output should match
 [forest-edge-100.csv](video-effect/data/forest-edge-100.csv).
 
