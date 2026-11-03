@@ -58,7 +58,7 @@ dimension >= 3.
 
 `convolveGPU` will be called with block size 8x8.  You can change the block
 size with the `blockDimSize` variable.  Your kernel should be able to handle
-when there are more pixels than threads available on the GPU (i.e. you need to
+the case when there are more pixels than threads available on the GPU (i.e. you need to
 implement striding).
 
 ### Running
@@ -86,22 +86,24 @@ To get a GPU in your sbatch job, add the following setting to the top
 
 A sample sbatch script can be found [here](video-effect/submit.sh).
 
-If you use interactive jobs, thn add the `--gres=gpu:a100_1g.5gb` argument
+If you use interactive jobs, add the `--gres=gpu:a100_1g.5gb` argument
 when you run `salloc`.  For this code, you need to load cuda and opencv with
-`module load cuda opencv`.
+`module load cuda/gcc/9.4.0 opencv`.
 
 ### Output
 
-The program will write out a video file with `_out` appended to the base
-filename.  For instance `./video-effect video.mp4 blur` will write out
-`video_out.mp4` with the blur effect.  You can copy videos off of zaratan to
+The program will write out a video file using the output filename provided on the command line.
+You can copy videos off of zaratan to
 view them.
 
-Running `./video-effect video.mp4 edge 100 frame.csv` will write the 100th
-frame into `frame.csv`.  Your output should match
+Running the command below,
+```bash
+./video-effect video.mp4 video-out-edge.mp4 edge 128 128 100 frame.csv
+```
+will write the 100th frame into `frame.csv`.  Your output should match
 [forest-edge-100.csv](video-effect/data/forest-edge-100.csv).
 
-The program will output to stdout:
+The program will print lines similar to the ones below to standard out:
 
 ```
 Total time: 3.221 s
@@ -130,6 +132,11 @@ You should put the code, Makefile and report in a single directory (named
 Feel free to try different videos and image kernels.
 Keep in mind that some videos may drastically increase in file size if the kernel reduces the compression rate of the video data.
 
+> [!CAUTION]
+> **AI tool disclosure:** If you choose to use an AI tool to assist in coding,
+> you must disclose this information in the report. This disclosure should
+> include the name of the AI tool and explain how it was used.
+
 ### Grading
 
 The project will be graded as follows:
@@ -148,11 +155,9 @@ The project will be graded as follows:
 In this version of the assignment, you have to write a parallel implementation
 of an [iterative stencil
 computation](https://en.wikipedia.org/wiki/Iterative_Stencil_Loops).
-
 We will use a two-dimensional (2D) Jacobi calculation to simulate heat
 diffusion. This calculation performs iterative sweeps (called timesteps) over
 a given array of values.
-
 The serial algorithm is described here and you have to implement its parallel
 version using CUDA.
 
@@ -269,6 +274,11 @@ You must submit the following files and no other files:
 You should put the code, Makefile and report in a single directory (named
 `LastName-FirstName-assign4`), compress it to .tar.gz
 (`LastName-FirstName-assign4.tar.gz`) and upload that to gradescope.
+
+> [!CAUTION]
+> **AI tool disclosure:** If you choose to use an AI tool to assist in coding,
+> you must disclose this information in the report. This disclosure should
+> include the name of the AI tool and explain how it was used.
 
 ### Grading
 

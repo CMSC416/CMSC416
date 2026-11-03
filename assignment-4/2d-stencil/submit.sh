@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH -N 1
-#SBATCH -p gpu
+#SBATCH -p gpu-a100_1g.5gb
 #SBATCH --gres=gpu:a100_1g.5gb
 #SBATCH -A cmsc416-class
 #SBATCH -o cuda-2d-stencil-%A.out
