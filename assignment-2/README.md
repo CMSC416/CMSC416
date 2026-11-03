@@ -154,6 +154,11 @@ You should put the code, Makefile and report in a single directory (named
 > - Use the compiler flag -g while debugging but -O2 when collecting performance numbers for the report.
 > - Make sure that your batch script has the --exclusive flag when collecting execution times.
 
+> [!CAUTION]
+> **AI tool disclosure:** If you choose to use an AI tool to assist in coding,
+> you must disclose this information in the report. This disclosure should
+> include the name of the AI tool and explain how it was used.
+
 ## Tips
 
 - [Zaratan primer](https://www.cs.umd.edu/class/fall2026/cmsc416/zaratan.shtml)
@@ -165,11 +170,12 @@ The project will be graded as follows:
 
 | Component | Percentage |
 | --------- | ---------- |
-| Runs correctly with 4 processes | 30 |
-| Runs correctly with 16 processes | 30 |
-| Performance with 4 processes | 15 |
-| Performance with 16 processes | 15 |
+| Runs correctly with 4 processes | 15 |
+| Runs correctly with 16 processes | 15 |
+| Performance with 4 processes | 10 |
+| Performance with 16 processes | 10 |
 | Writeup | 10 |
+| In-person assessment | 40 |
 
 > [!WARNING]
 > If your program does not compile when submitted on gradescope, you get 0 points. If your program does not run correctly, you do NOT get any points for performance/speedup.

@@ -190,6 +190,11 @@ You should put the dataset, 3 Python scripts, and report in a single directory (
 > - We will not accept .ipynb files -- if you use a Python notebook, you should export to .py files, make sure they work correctly in a terminal and then submit the .py files
 > - Do not submit the dataset files in the tarball
 
+> [!CAUTION]
+> **AI tool disclosure:** If you choose to use an AI tool to assist in coding,
+> you must disclose this information in the report. This disclosure should
+> include the name of the AI tool and explain how it was used.
+
 ## Tips
 
 - Helpful resources: [HPCToolkit user manual](http://www.hpctoolkit.org/manual/HPCToolkit-users-manual.pdf) and [Hatchet User Guide](https://hatchet.readthedocs.io/en/latest/user_guide.html)

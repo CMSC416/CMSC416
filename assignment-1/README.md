@@ -121,6 +121,11 @@ gradescope.
 > should be used for studying performance but commented out before submitting
 > your code.
 
+> [!CAUTION]
+> **AI tool disclosure:** If you choose to use an AI tool to assist in coding,
+> you must disclose this information in the report. This disclosure should
+> include the name of the AI tool and explain how it was used.
+
 ## Tips
 
 - [zaratan primer](https://www.cs.umd.edu/class/fall2026/cmsc416/zaratan.shtml)
