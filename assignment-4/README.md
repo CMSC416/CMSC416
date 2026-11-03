@@ -86,7 +86,7 @@ To get a GPU in your sbatch job, add the following setting to the top
 
 A sample sbatch script can be found [here](video-effect/submit.sh).
 
-If you use interactive jobs, thn add the `--gres=gpu:a100_1g.5gb` argument
+If you use interactive jobs, add the `--gres=gpu:a100_1g.5gb` argument
 when you run `salloc`.  For this code, you need to load cuda and opencv with
 `module load cuda/gcc/9.4.0 opencv`.
 
@@ -96,11 +96,14 @@ The program will write out a video file using the output filename provided on th
 You can copy videos off of zaratan to
 view them.
 
-Running `./video-effect video.mp4 video-out-edge.mp4 edge 128 128 100 frame.csv` will write the 100th
-frame into `frame.csv`.  Your output should match
+Running the command below,
+```bash
+./video-effect video.mp4 video-out-edge.mp4 edge 128 128 100 frame.csv
+```
+will write the 100th frame into `frame.csv`.  Your output should match
 [forest-edge-100.csv](video-effect/data/forest-edge-100.csv).
 
-The program will output to stdout:
+The program will print lines similar to the ones below to standard out:
 
 ```
 Total time: 3.221 s
