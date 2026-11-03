@@ -132,6 +132,11 @@ You should put the code, Makefile and report in a single directory (named
 Feel free to try different videos and image kernels.
 Keep in mind that some videos may drastically increase in file size if the kernel reduces the compression rate of the video data.
 
+> [!CAUTION]
+> **AI tool disclosure:** If you choose to use an AI tool to assist in coding,
+> you must disclose this information in the report. This disclosure should
+> include the name of the AI tool and explain how it was used.
+
 ### Grading
 
 The project will be graded as follows:
@@ -150,11 +155,9 @@ The project will be graded as follows:
 In this version of the assignment, you have to write a parallel implementation
 of an [iterative stencil
 computation](https://en.wikipedia.org/wiki/Iterative_Stencil_Loops).
-
 We will use a two-dimensional (2D) Jacobi calculation to simulate heat
 diffusion. This calculation performs iterative sweeps (called timesteps) over
 a given array of values.
-
 The serial algorithm is described here and you have to implement its parallel
 version using CUDA.
 
@@ -271,6 +274,11 @@ You must submit the following files and no other files:
 You should put the code, Makefile and report in a single directory (named
 `LastName-FirstName-assign4`), compress it to .tar.gz
 (`LastName-FirstName-assign4.tar.gz`) and upload that to gradescope.
+
+> [!CAUTION]
+> **AI tool disclosure:** If you choose to use an AI tool to assist in coding,
+> you must disclose this information in the report. This disclosure should
+> include the name of the AI tool and explain how it was used.
 
 ### Grading
 
